@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "mysqluser",
+    "password": "4RkD.JPfiXNg",
+    "database": "LearnIT",
+    "host": "82.79.128.245",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "mysqluser",
+    "password": "4RkD.JPfiXNg",
+    "database": "LearnIT",
+    "host": "82.79.128.245",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "mysqluser",
+    "password": "4RkD.JPfiXNg",
+    "database": "LearnIT",
+    "host": "82.79.128.245",
+    "dialect": "mysql"
+  }
+}
