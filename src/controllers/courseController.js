@@ -18,7 +18,7 @@ const getAllCourses = async (req, res) => {
     }
 };
 
-const getCoursById = async (req, res) => {
+const getCourseById = async (req, res) => {
     try {
         const courseId = req.params.id; 
         const course = await Course.findByPk(courseId);
@@ -33,4 +33,4 @@ const getCoursById = async (req, res) => {
     }
 }
 
-export { createCourse, getAllCourses, getCoursById };
+export { createCourse, getAllCourses, getCourseById };
