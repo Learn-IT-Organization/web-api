@@ -5,16 +5,16 @@ const addUser = async (req, res) => {
         const user = await Users.create(req.body);
         res.status(201).json(user);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(400).json({ error: error.message });
     }
 };
 
-const getUsers = async (req, res) => {
+const getAllUsers = async (req, res) => {
     try {
         const users = await Users.findAll();
         res.status(200).json(users);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(400).json({ error: error.message });
     }
 };
 
@@ -31,4 +31,4 @@ const getUserById = async (req, res) => {
     }
 };
 
-export { addUser, getUsers, getUserById };
+export { addUser, getAllUsers, getUserById };
