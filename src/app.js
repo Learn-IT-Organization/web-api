@@ -4,8 +4,9 @@ const { sequelize } = pkg;
 import courseRoutes from './routes/courseRoutes.js'; 
 
 const app = express();
-const port = 3000;
+const port = 3306;
 
+app.use(express.json());
 app.use(express.json());
 
 app.use('/', courseRoutes);
