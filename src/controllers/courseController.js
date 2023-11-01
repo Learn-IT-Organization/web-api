@@ -18,4 +18,19 @@ const getAllCourses = async (req, res) => {
     }
 };
 
-export { createCourse, getAllCourses };
+const getCoursById = async (req, res) => {
+    try {
+        const courseId = req.params.id; 
+        const course = await Course.findByPk(courseId);
+
+        if (course) {
+            res.status(200).json(course);
+        } else {
+            res.status(404).json({ error: 'Course not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export { createCourse, getAllCourses, getCoursById };
