@@ -1,4 +1,5 @@
 import Chapter from '../models/chapterModel.js';
+import Lessons from '../models/lessonModel.js'; 
 
 const createChapter = async (req, res) => {
     try {
@@ -51,4 +52,23 @@ const getChaptersByCourse = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-export { createChapter, getAllChapters, getChapterById, getChaptersByCourse };
+
+const getLessonsByChapterId = async (req, res) => {
+    try {
+        const chapterId = req.params.chapterId;
+    
+        const lessons = await Lessons.findAll({
+          where: { lesson_chapter_id: chapterId }, 
+        });
+    
+        if (lessons.length > 0) {
+            res.status(200).json(lessons);
+        } else {
+            res.status(404).json({ error: 'No chapters found for the given course.' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export { createChapter, getAllChapters, getChapterById, getChaptersByCourse, getLessonsByChapterId };
