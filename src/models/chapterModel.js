@@ -29,4 +29,11 @@ const Chapter = sequelize.define('chapters', {
     timestamps: false, 
 });
 
+Chapter.associate = (models) => {   
+    Chapter.hasMany(models.Lesson, {
+        foreignKey: 'lesson_chapter_id',
+        onDelete: 'CASCADE',
+    });
+}
+
 export default Chapter;

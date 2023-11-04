@@ -1,26 +1,21 @@
 import express from 'express';
 import pkg from '../config/database.cjs';
 const { sequelize } = pkg; 
-import courseRoutes from './routes/courseRoutes.js'; 
+
 import userRoutes from './routes/userRoutes.js';
-<<<<<<< HEAD
-import lessonRoutes from './routes/lessonRoutes.js';
-=======
+import courseRoutes from './routes/courseRoutes.js'; 
 import chapterRoutes from './routes/chapterRoutes.js';
->>>>>>> f49d8751f54ede8e97a6df85591edaf4311236b8
+import lessonRoutes from './routes/lessonRoutes.js';
 
 const app = express();
 const port = 3306;
 
 app.use(express.json());
 
-app.use('/', courseRoutes);
 app.use('/', userRoutes);
-<<<<<<< HEAD
-app.use('/', lessonRoutes);
-=======
+app.use('/', courseRoutes);
 app.use('/', chapterRoutes);
->>>>>>> f49d8751f54ede8e97a6df85591edaf4311236b8
+app.use('/', lessonRoutes);
 
 sequelize.sync = async () => {
   await sequelize.sync();
