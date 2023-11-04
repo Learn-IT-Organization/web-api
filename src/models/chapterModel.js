@@ -1,33 +1,27 @@
-import DataTypes from 'sequelize';
+import { DataTypes } from 'sequelize';
 import pkg from '../../config/database.cjs';
 const { sequelize } = pkg;
 
-const Course = sequelize.define('courses', {
-    course_id: {
+const Chapter = sequelize.define('chapters', {
+    chapter_id: {
         type: DataTypes.INTEGER,
-        primaryKey: true, 
+        primaryKey: true,
         allowNull: false,
         autoIncrement: true, 
     },
-    course_name: {
+    chapter_name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    create_date: {
-        type: DataTypes.DATE,
+    course_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-
     },
-    programming_language: {
+    chapter_description: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    course_description: {
-        type: DataTypes.STRING,
-        allowNull: false,
-
-    },
-    user_id: {
+    chapter_sequence_number: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
@@ -35,4 +29,4 @@ const Course = sequelize.define('courses', {
     timestamps: false, 
 });
 
-export default Course;
+export default Chapter;
