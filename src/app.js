@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes.js';
 import courseRoutes from './routes/courseRoutes.js'; 
 import chapterRoutes from './routes/chapterRoutes.js';
 import lessonRoutes from './routes/lessonRoutes.js';
+import lessonContentRoutes from './routes/lessonContentRoutes.js';
 
 const app = express();
 const port = 3306;
@@ -16,6 +17,7 @@ app.use('/', userRoutes);
 app.use('/', courseRoutes);
 app.use('/', chapterRoutes);
 app.use('/', lessonRoutes);
+app.use('/', lessonContentRoutes);
 
 sequelize.sync = async () => {
   await sequelize.sync();
