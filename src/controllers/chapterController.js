@@ -34,25 +34,6 @@ const getChapterById = async (req, res) => {
     }
 };
 
-const getChaptersByCourse = async (req, res) => {
-    try {
-        const { courseId } = req.params;
-        const chapters = await Chapter.findAll({
-            where: {
-                course_id: courseId,
-            },
-        });
-
-        if (chapters.length > 0) {
-            res.status(200).json(chapters);
-        } else {
-            res.status(404).json({ error: 'No chapters found for the given course.' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
 const getLessonsByChapterId = async (req, res) => {
     try {
         const chapterId = req.params.chapterId;
@@ -71,4 +52,4 @@ const getLessonsByChapterId = async (req, res) => {
     }
 };
 
-export { createChapter, getAllChapters, getChapterById, getChaptersByCourse, getLessonsByChapterId };
+export { createChapter, getAllChapters, getChapterById, getLessonsByChapterId };

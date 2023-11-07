@@ -34,6 +34,10 @@ Chapter.associate = (models) => {
         foreignKey: 'lesson_chapter_id',
         onDelete: 'CASCADE',
     });
+
+    Chapter.belongsTo(models.Course, {
+        foreignKey: 'course_id',
+    });
 }
 
 export default Chapter;
