@@ -13,7 +13,7 @@ const Chapter = sequelize.define('chapters', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    course_id: {
+    chapter_course_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
@@ -36,7 +36,7 @@ Chapter.associate = (models) => {
     });
 
     Chapter.belongsTo(models.Course, {
-        foreignKey: 'course_id',
+        foreignKey: 'chapter_course_id',
     });
 }
 
