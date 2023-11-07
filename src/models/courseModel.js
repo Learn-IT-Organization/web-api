@@ -35,4 +35,11 @@ const Course = sequelize.define('courses', {
     timestamps: false, 
 });
 
+Course.associate = (models) => {
+    Course.hasMany(models.Chapter, {
+        foreignKey: 'course_id',
+        onDelete: 'CASCADE',
+    });
+}
+
 export default Course;
