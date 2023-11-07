@@ -40,6 +40,11 @@ Course.associate = (models) => {
         foreignKey: 'chapter_course_id',
         onDelete: 'CASCADE',
     });
+
+    Course.hasMany(QuestionsAnswers, {
+        foreignKey: 'qa_course_id',
+        onDelete: 'CASCADE',
+    });
 }
 
 export default Course;

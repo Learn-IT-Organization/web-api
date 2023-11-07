@@ -1,5 +1,6 @@
 import Course from '../models/courseModel.js';
 import Chapter from '../models/chapterModel.js';
+import QuestionsAnswers from '../models/questionsAnswersModel.js';
 
 const createCourse = async (req, res) => {
     try {
@@ -53,4 +54,27 @@ const getChaptersByCourseId = async (req, res) => {
     }
 };
 
-export { createCourse, getAllCourses, getCourseById, getChaptersByCourseId };
+
+const getQuestionsAnswersByCourseId = async (req, res) => {
+    try {
+        const courseId = req.params.courseId;
+        const questionsAnswers = await QuestionsAnswers.findAll({
+            where: {
+                qa_course_id: courseId,
+            },
+        });
+        if (questionsAnswers.length > 0) {
+            res.status(200).json(questionsAnswers);
+        } else {
+            res.status(404).json({ error: 'No questions or answers found for the given course.' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export { createCourse,
+         getAllCourses,
+         getCourseById,
+         getChaptersByCourseId,
+         getQuestionsAnswersByCourseId };
