@@ -2,8 +2,8 @@ import DataTypes from 'sequelize';
 import pkg from '../../config/database.cjs';
 const { sequelize } = pkg;
 
-const Lessons = sequelize.define('lessons', {
-    lesson_id: {
+const LessonContent = sequelize.define('lesson_contents', {
+    content_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         autoIncrement: true,
@@ -12,37 +12,29 @@ const Lessons = sequelize.define('lessons', {
             notEmpty: true,
         }
     },
-    lesson_name: {
+    content_type: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
             notEmpty: true,
         }
     },
-    lesson_chapter_id: {
+    url: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+        }
+    },
+    attachments: {
+        type: DataTypes.BLOB,
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+        }
+    },
+    content_lesson_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        }
-    },
-    lesson_sequence_number: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        }
-    },
-    lesson_description: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        },
-        unique: true
-    },
-    lesson_type: {
-        type: DataTypes.STRING,
         allowNull: false,
         validate: {
             notEmpty: true,
@@ -53,21 +45,11 @@ const Lessons = sequelize.define('lessons', {
     timestamps: false,
 });
 
-Lessons.associate = (models) => {
-    Lessons.belongsTo(models.Chapter, {
-        foreignKey: 'lesson_chapter_id',
-        onDelete: 'CASCADE',
-    });
-  
-    Lessons.hasMany(models.LessonContent, {
+LessonContent.associate = (models) => {
+    Content.belongsTo(models.Lessons, {
         foreignKey: 'content_lesson_id',
-        onDelete: 'CASCADE',
-    });
-  
-    Lessons.hasMany(models.QuestionsAnswers, {
-        foreignKey: 'qa_lesson_id',
         onDelete: 'CASCADE',
     });
 };
 
-export default Lessons;
+export default LessonContent;

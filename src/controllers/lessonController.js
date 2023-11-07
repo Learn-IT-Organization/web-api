@@ -1,3 +1,4 @@
+import LessonContent from '../models/lessonContentModel.js';
 import Lessons from '../models/lessonModel.js';
 import QuestionsAnswers from '../models/questionsAnswersModel.js';
 
@@ -33,6 +34,24 @@ const getLessonById = async (req, res) => {
     }
 };
 
+const getContentsByLessonId = async (req, res) => {
+    try {
+        const lessonId = req.params.lessonId;
+    
+        const contents = await LessonContent.findAll({
+          where: { content_lesson_id: lessonId }, 
+        });
+    
+        if (contents.length > 0) {
+            res.status(200).json(contents);
+        } else {
+            res.status(404).json({ error: 'No contents found for the given lesson.' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 const getQuestionsAnswersByLessonId = async (req, res) => {
     try {
         const lessonId = req.params.lessonId;
@@ -54,4 +73,5 @@ const getQuestionsAnswersByLessonId = async (req, res) => {
 export { createLesson,
          getAllLessons,
          getLessonById,
-        getQuestionsAnswersByLessonId };
+         getContentsByLessonId,
+         getQuestionsAnswersByLessonId };
