@@ -58,9 +58,14 @@ Lessons.associate = (models) => {
         foreignKey: 'lesson_chapter_id',
         onDelete: 'CASCADE',
     });
-
+  
     Lessons.hasMany(models.LessonContent, {
         foreignKey: 'content_lesson_id',
+        onDelete: 'CASCADE',
+    });
+  
+    Lessons.hasMany(models.QuestionsAnswers, {
+        foreignKey: 'qa_lesson_id',
         onDelete: 'CASCADE',
     });
 };

@@ -1,5 +1,6 @@
 import Chapter from '../models/chapterModel.js';
 import Lessons from '../models/lessonModel.js'; 
+import QuestionsAnswers from '../models/questionsAnswersModel.js';
 
 const createChapter = async (req, res) => {
     try {
@@ -45,11 +46,33 @@ const getLessonsByChapterId = async (req, res) => {
         if (lessons.length > 0) {
             res.status(200).json(lessons);
         } else {
-            res.status(404).json({ error: 'No chapters found for the given course.' });
+            res.status(404).json({ error: 'No lessons found for the given chapter.' });
         }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-export { createChapter, getAllChapters, getChapterById, getLessonsByChapterId };
+const getQuestionsAnswersByChapterId = async (req, res) => {
+    try {
+        const chapterId = req.params.chapterId;
+        const questionsAnswers = await QuestionsAnswers.findAll({
+            where: {
+                qa_chapter_id: chapterId,
+            },
+        });
+        if (questionsAnswers.length > 0) {
+            res.status(200).json(questionsAnswers);
+        } else {
+            res.status(404).json({ error: 'No questions or answers found for the given chapter.' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export { createChapter,
+         getAllChapters,
+         getChapterById,
+         getLessonsByChapterId,
+         getQuestionsAnswersByChapterId };

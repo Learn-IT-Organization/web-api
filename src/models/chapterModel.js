@@ -38,6 +38,12 @@ Chapter.associate = (models) => {
     Chapter.belongsTo(models.Course, {
         foreignKey: 'chapter_course_id',
     });
+
+    Chapter.hasMany(QuestionsAnswers, {
+        foreignKey: 'qa_chapter_id',
+        onDelete: 'CASCADE',
+    });
+
 }
 
 export default Chapter;
