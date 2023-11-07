@@ -37,7 +37,7 @@ const Course = sequelize.define('courses', {
 
 Course.associate = (models) => {
     Course.hasMany(models.Chapter, {
-        foreignKey: 'course_id',
+        foreignKey: 'chapter_course_id',
         onDelete: 'CASCADE',
     });
 }

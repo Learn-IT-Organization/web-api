@@ -36,10 +36,10 @@ const getCourseById = async (req, res) => {
 
 const getChaptersByCourseId = async (req, res) => {
     try {
-        const  courseId  = req.params;
+        const courseId = req.params.courseId;
         const chapters = await Chapter.findAll({
             where: {
-                course_id: courseId,
+                chapter_course_id: courseId,
             },
         });
 
