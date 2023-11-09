@@ -21,10 +21,8 @@ app.use('/', lessonRoutes);
 app.use('/', questionsAnswersRoutes);
 app.use('/', lessonContentRoutes);
 
-sequelize.sync = async () => {
-  await sequelize.sync();
-  console.log('Database synchronized');
-};
+sequelize.sync();
+console.log('Database synchronized');
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
