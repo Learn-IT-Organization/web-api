@@ -10,25 +10,26 @@ const addUser = async (req, res) => {
 };
 
 const getAllUsers = async (req, res) => {
-    try {
-        const users = await Users.findAll();
+    const users = await Users.findAll();
+    if (users != null) {
         res.status(200).json(users);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+    } else {
+        res.status(404).json([]);
     }
 };
 
 const getUserById = async (req, res) => {
-    try {
-        const { id } = req.params; 
-        const user = await Users.findByPk(id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+    const { id } = req.params; 
+    const user = await Users.findByPk(id);
+    if (user != null) {
         res.status(200).json(user);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    } else {
+        res.status(404).json([]);
     }
 };
 
-export { addUser, getAllUsers, getUserById };
+export {
+    addUser,
+    getAllUsers,
+    getUserById
+};
