@@ -14,9 +14,9 @@ const Course = sequelize.define('courses', {
         allowNull: false,
     },
     create_date: {
-        type: DataTypes.DATE,
+       type: DataTypes.DATE,
         allowNull: false,
-
+        defaultValue: DataTypes.NOW,
     },
     programming_language: {
         type: DataTypes.STRING,
@@ -27,7 +27,7 @@ const Course = sequelize.define('courses', {
         allowNull: false,
 
     },
-    user_id: {
+    course_user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },

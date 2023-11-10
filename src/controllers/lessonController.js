@@ -5,73 +5,63 @@ import QuestionsAnswers from '../models/questionsAnswersModel.js';
 const createLesson = async (req, res) => {
     try {
         const lesson = await Lessons.create(req.body);
-        res.status(200).json(lesson);
+        res.status(201).json(lesson);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
 
 const getAllLessons = async (req, res) => {
-    try {
-        const lessons = await Lessons.findAll();
+    const lessons = await Lessons.findAll();
+    if (lessons != null) {
         res.status(200).json(lessons);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+    } else {
+        res.status(404).json([]);
     }
 };
 
 const getLessonById = async (req, res) => {
-    try {
-        const lessonId = req.params.id;
-        const lesson = await Lessons.findByPk(lessonId);
-        if (lesson) {
-            res.status(200).json(lesson);
-        } else {
-            res.status(404).json({ error: 'Lesson not found' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    const lessonId = req.params.id;
+    const lesson = await Lessons.findByPk(lessonId);
+    if (lesson != null) {
+        res.status(200).json(lesson);
+    } else {
+        res.status(404).json([]);
     }
 };
 
 const getContentsByLessonId = async (req, res) => {
-    try {
-        const lessonId = req.params.lessonId;
-    
-        const contents = await LessonContent.findAll({
-          where: { content_lesson_id: lessonId }, 
-        });
-    
-        if (contents.length > 0) {
-            res.status(200).json(contents);
-        } else {
-            res.status(404).json({ error: 'No contents found for the given lesson.' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    const lessonId = req.params.lessonId;
+    const contents = await LessonContent.findAll({
+        where: {
+            content_lesson_id: lessonId
+        }, 
+    });
+    if (contents.length > 0) {
+        res.status(200).json(contents);
+    } else {
+        res.status(404).json([]);
     }
 };
 
 const getQuestionsAnswersByLessonId = async (req, res) => {
-    try {
-        const lessonId = req.params.lessonId;
-        const questionsAnswers = await QuestionsAnswers.findAll({
-            where: {
-                qa_lesson_id: lessonId,
-            },
-        });
-        if (questionsAnswers.length > 0) {
-            res.status(200).json(questionsAnswers);
-        } else {
-            res.status(404).json({ error: 'No questions or answers found for the given lesson.' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    const lessonId = req.params.lessonId;
+    const questionsAnswers = await QuestionsAnswers.findAll({
+        where: {
+            qa_lesson_id: lessonId,
+        },
+    });
+    if (questionsAnswers.length > 0) {
+        res.status(200).json(questionsAnswers);
+    } else {
+        res.status(404).json([]);
     }
 };
 
-export { createLesson,
-         getAllLessons,
-         getLessonById,
-         getContentsByLessonId,
-         getQuestionsAnswersByLessonId };
+export {
+    createLesson,
+    getAllLessons,
+    getLessonById,
+    getContentsByLessonId,
+    getQuestionsAnswersByLessonId
+};

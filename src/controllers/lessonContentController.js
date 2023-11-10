@@ -3,33 +3,33 @@ import LessonContent from '../models/lessonContentModel.js';
 const createLessonContent = async (req, res) => {
     try {
         const lessonContent = await LessonContent.create(req.body);
-        res.status(200).json(lessonContent);
+        res.status(201).json(lessonContent);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
 
 const getAllLessonContents = async (req, res) => {
-    try {
-        const lessonContent = await LessonContent.findAll();
+    const lessonContent = await LessonContent.findAll();
+    if (lessonContent != null) {
         res.status(200).json(lessonContent);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+    } else {
+        res.status(404).json([]);
     }
 };
 
 const getLessonContentById = async (req, res) => {
-    try {
-        const lessonContentId = req.params.id;
-        const lessonContent = await LessonContent.findByPk(lessonContentId);
-        if (lessonContent) {
-            res.status(200).json(lessonContent);
-        } else {
-            res.status(404).json({ error: 'Lesson content not found' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    const lessonContentId = req.params.id;
+    const lessonContent = await LessonContent.findByPk(lessonContentId);
+    if (lessonContent != null) {
+        res.status(200).json(lessonContent);
+    } else {
+        res.status(404).json([]);
     }
 };
 
-export { createLessonContent, getAllLessonContents, getLessonContentById};
+export {
+    createLessonContent,
+    getAllLessonContents,
+    getLessonContentById
+};
