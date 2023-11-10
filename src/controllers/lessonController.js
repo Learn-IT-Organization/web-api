@@ -1,3 +1,4 @@
+import HTTP_STATUS_CODES from '../constants/httpStatusCodes.js';
 import LessonContent from '../models/lessonContentModel.js';
 import Lessons from '../models/lessonModel.js';
 import QuestionsAnswers from '../models/questionsAnswersModel.js';
@@ -5,18 +6,18 @@ import QuestionsAnswers from '../models/questionsAnswersModel.js';
 const createLesson = async (req, res) => {
     try {
         const lesson = await Lessons.create(req.body);
-        res.status(201).json(lesson);
+        res.status(HTTP_STATUS_CODES.CREATED).json(lesson);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
     }
 };
 
 const getAllLessons = async (req, res) => {
     const lessons = await Lessons.findAll();
     if (lessons != null) {
-        res.status(200).json(lessons);
+        res.status(HTTP_STATUS_CODES.CREATED).json(lessons);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 
@@ -24,9 +25,9 @@ const getLessonById = async (req, res) => {
     const lessonId = req.params.id;
     const lesson = await Lessons.findByPk(lessonId);
     if (lesson != null) {
-        res.status(200).json(lesson);
+        res.status(HTTP_STATUS_CODES.OK).json(lesson);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 
@@ -38,9 +39,9 @@ const getContentsByLessonId = async (req, res) => {
         }, 
     });
     if (contents.length > 0) {
-        res.status(200).json(contents);
+        res.status(HTTP_STATUS_CODES.OK).json(contents);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 
@@ -52,9 +53,9 @@ const getQuestionsAnswersByLessonId = async (req, res) => {
         },
     });
     if (questionsAnswers.length > 0) {
-        res.status(200).json(questionsAnswers);
+        res.status(HTTP_STATUS_CODES.OK).json(questionsAnswers);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 
