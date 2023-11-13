@@ -1,22 +1,23 @@
 import Chapter from '../models/chapterModel.js';
 import Lessons from '../models/lessonModel.js'; 
 import QuestionsAnswers from '../models/questionsAnswersModel.js';
+import HTTP_STATUS_CODES from '../constants/httpStatusCodes.js';
 
 const createChapter = async (req, res) => {
     try {
         const chapter = await Chapter.create(req.body);
-        res.status(201).json(chapter);
+        res.status(HTTP_STATUS_CODES.CREATED).json(chapter);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
     }
 };
 
 const getAllChapters = async (req, res) => {
     const chapters = await Chapter.findAll();
     if (chapters != null) {
-        res.status(200).json(chapters);
+        res.status(HTTP_STATUS_CODES.OK).json(chapters);
     } else {
-        res.status(404).json([])
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([])
     }
 };
 
@@ -24,9 +25,9 @@ const getChapterById = async (req, res) => {
     const chapterId = req.params.id;
     const chapter = await Chapter.findByPk(chapterId);
     if (chapter) {
-        res.status(200).json(chapter);
+        res.status(HTTP_STATUS_CODES.OK).json(chapter);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 
@@ -38,9 +39,9 @@ const getLessonsByChapterId = async (req, res) => {
         }, 
     });
     if (lessons.length > 0) {
-        res.status(200).json(lessons);
+        res.status(HTTP_STATUS_CODES.OK).json(lessons);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 
@@ -52,9 +53,9 @@ const getQuestionsAnswersByChapterId = async (req, res) => {
         },
     });
     if (questionsAnswers.length > 0) {
-        res.status(200).json(questionsAnswers);
+        res.status(HTTP_STATUS_CODES.OK).json(questionsAnswers);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 

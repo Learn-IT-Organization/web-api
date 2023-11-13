@@ -1,7 +1,6 @@
 import express from 'express';
-import pkg from '../config/database.cjs';
-const { sequelize } = pkg; 
-
+import database from '../config/database.cjs';
+const { sequelize } = database; 
 import userRoutes from './routes/userRoutes.js';
 import courseRoutes from './routes/courseRoutes.js'; 
 import chapterRoutes from './routes/chapterRoutes.js';
@@ -9,10 +8,9 @@ import lessonRoutes from './routes/lessonRoutes.js';
 import questionsAnswersRoutes from './routes/questionsAnswersRoutes.js'
 import lessonContentRoutes from './routes/lessonContentRoutes.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
+import { config } from '../config/config.js';
 
 const app = express();
-const port = 3306;
-
 app.use(express.json());
 
 app.use('/', userRoutes);
@@ -27,6 +25,6 @@ app.use(errorMiddleware);
 sequelize.sync();
 console.log('Database synchronized');
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(config.port, () => {
+  console.log(`Server is running on port ${config.port}`);
 });

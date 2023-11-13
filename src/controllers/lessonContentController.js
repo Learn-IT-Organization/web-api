@@ -1,20 +1,21 @@
 import LessonContent from '../models/lessonContentModel.js';
+import HTTP_STATUS_CODES from '../constants/httpStatusCodes.js';
 
 const createLessonContent = async (req, res) => {
     try {
         const lessonContent = await LessonContent.create(req.body);
-        res.status(201).json(lessonContent);
+        res.status(HTTP_STATUS_CODES.CREATED).json(lessonContent);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
     }
 };
 
 const getAllLessonContents = async (req, res) => {
     const lessonContent = await LessonContent.findAll();
     if (lessonContent != null) {
-        res.status(200).json(lessonContent);
+        res.status(HTTP_STATUS_CODES.OK).json(lessonContent);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 
@@ -22,9 +23,9 @@ const getLessonContentById = async (req, res) => {
     const lessonContentId = req.params.id;
     const lessonContent = await LessonContent.findByPk(lessonContentId);
     if (lessonContent != null) {
-        res.status(200).json(lessonContent);
+        res.status(HTTP_STATUS_CODES.CREATED).json(lessonContent);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 

@@ -3,9 +3,9 @@ import { createLessonContent, getAllLessonContents, getLessonContentById } from 
 
 const router = Router();
 
-router.post('/lessonContent', createLessonContent);
+router.post('/lessonContents', createLessonContent);
 
-router.get('/lessonContent', getAllLessonContents);
+router.get('/lessonContents', getAllLessonContents);
 
 router.get('/lessonContent/:id', getLessonContentById);
 

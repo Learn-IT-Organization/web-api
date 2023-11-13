@@ -1,22 +1,23 @@
 import Course from '../models/courseModel.js';
 import Chapter from '../models/chapterModel.js';
 import QuestionsAnswers from '../models/questionsAnswersModel.js';
+import HTTP_STATUS_CODES from '../constants/httpStatusCodes.js';
 
 const createCourse = async (req, res) => {
     try {
         const course = await Course.create(req.body);
-        res.status(201).json(course);
+        res.status(HTTP_STATUS_CODES.CREATED).json(course);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
     }
 };
 
 const getAllCourses = async (req, res) => {
     const courses = await Course.findAll();
     if (courses != null) {
-        res.status(200).json(courses);
+        res.status(HTTP_STATUS_CODES.OK).json(courses);
     } else {
-        res.status(404).json([])
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([])
     }
 };
 
@@ -24,9 +25,9 @@ const getCourseById = async (req, res) => {
     const courseId = req.params.id;
     const course = await Course.findByPk(courseId);
     if (course != null) {
-        res.status(200).json(course);
+        res.status(HTTP_STATUS_CODES.OK).json(course);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 
@@ -38,9 +39,9 @@ const getChaptersByCourseId = async (req, res) => {
         },
     });
     if (chapters.length > 0) {
-        res.status(200).json(chapters);
+        res.status(HTTP_STATUS_CODES.OK).json(chapters);
     } else {
-        res.status(404).json([]);
+        res.status(HTTP_STATUS_CODES.NOT_FOUND).json([]);
     }
 };
 
