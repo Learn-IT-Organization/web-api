@@ -7,12 +7,14 @@ import chapterRoutes from './routes/chapterRoutes.js';
 import lessonRoutes from './routes/lessonRoutes.js';
 import questionsAnswersRoutes from './routes/questionsAnswersRoutes.js'
 import lessonContentRoutes from './routes/lessonContentRoutes.js';
+import loginRoutes from './routes/loginRoutes.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
 import { config } from '../config/config.js';
 
 const app = express();
 app.use(express.json());
 
+app.use('/', loginRoutes);
 app.use('/', userRoutes);
 app.use('/', courseRoutes);
 app.use('/', chapterRoutes);
