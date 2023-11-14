@@ -11,7 +11,6 @@ import lessonContentRoutes from './routes/lessonContentRoutes.js';
 import loginRoutes from './routes/loginRoutes.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
 import registerRoutes from './routes/registerRoutes.js';
-import loginRoutes from './routes/loginRoutes.js';
 
 const app = express();
 app.use(express.json());
@@ -24,7 +23,6 @@ app.use('/', lessonRoutes);
 app.use('/', questionsAnswersRoutes);
 app.use('/', lessonContentRoutes);
 app.use('/', registerRoutes);
-app.use('/', loginRoutes);
 app.use(errorMiddleware);
 
 sequelize.sync();
