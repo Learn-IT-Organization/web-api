@@ -2,7 +2,7 @@ import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import Users from "../models/userModel.js";
 import bcrypt from "bcrypt";
 
-const register = (req, res) => {
+const register = async (req, res) => {
   const {
     user_role,
     first_name,
@@ -12,6 +12,12 @@ const register = (req, res) => {
     gender,
     user_level,
   } = req.body;
+  const existingUser = await Users.findOne({ where: { user_name: user_name } });
+  if (existingUser) {
+    return res
+      .status(HTTP_STATUS_CODES.BAD_REQUEST)
+      .json({ success: false, error: "User already exists" });
+  }
   bcrypt.hash(user_password, 10).then((hash) => {
     Users.create({
       user_role: user_role,
@@ -23,7 +29,7 @@ const register = (req, res) => {
       user_level: user_level,
     })
       .then(() => {
-        res.json("USER REGISTERED");
+        res.json({ success: true, message: "USER REGISTERED" });
       })
       .catch((err) => {
         if (err) {

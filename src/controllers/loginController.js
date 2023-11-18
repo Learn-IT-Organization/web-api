@@ -9,14 +9,14 @@ const login = async (req, res) => {
   if (!user)
     res
       .status(HTTP_STATUS_CODES.NOT_FOUND)
-      .json({ error: "User Doesn't Exist" });
+      .json({ success: false, error: "User not found" });
 
   const dbPassword = user.user_password;
   bcrypt.compare(user_password, dbPassword).then((match) => {
     if (!match) {
-      res
+      return res
         .status(HTTP_STATUS_CODES.BAD_REQUEST)
-        .json({ error: "Wrong Username and Password Combination!" });
+        .json({ success: false, error: "Invalid password" });
     } else {
       const accessToken = createTokens(user);
 
@@ -24,12 +24,13 @@ const login = async (req, res) => {
         maxAge: 60 * 60 * 24 * 30 * 1000,
         httpOnly: true,
       });
-
-      res.json("LOGGED IN");
+      res.json({
+        success: true,
+        token: accessToken,
+        message: "Logged in successfully",
+      });
     }
   });
 };
 
-export { 
-    login
-};
+export { login };
