@@ -18,11 +18,12 @@ const login = async (req, res) => {
         .status(HTTP_STATUS_CODES.BAD_REQUEST)
         .json({ success: false, error: "Invalid password" });
     } else {
-      const accessToken = createTokens(user);
+      const accessToken = createTokens(user, req);
 
       res.cookie("access-token", accessToken, {
         maxAge: 60 * 60 * 24 * 30 * 1000,
         httpOnly: true,
+        secure: true,
       });
       res.json({
         success: true,
