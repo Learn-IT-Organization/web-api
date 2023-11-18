@@ -14,7 +14,7 @@ const login = async (req, res) => {
   const dbPassword = user.user_password;
   bcrypt.compare(user_password, dbPassword).then((match) => {
     if (!match) {
-      return res
+      res
         .status(HTTP_STATUS_CODES.BAD_REQUEST)
         .json({ success: false, error: "Invalid password" });
     } else {
