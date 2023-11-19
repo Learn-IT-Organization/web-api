@@ -38,4 +38,7 @@ const validateToken = (req, res, next) => {
   }
 };
 
-export { createTokens, validateToken };
+export { 
+  createTokens,
+  validateToken
+};

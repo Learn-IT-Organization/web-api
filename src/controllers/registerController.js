@@ -29,7 +29,7 @@ const register = async (req, res) => {
       user_level: user_level,
     })
       .then(() => {
-        res.json({ success: true, message: "USER REGISTERED" });
+        res.json({ success: true, message: "User registered" });
       })
       .catch((err) => {
         if (err) {
