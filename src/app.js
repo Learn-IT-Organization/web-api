@@ -12,9 +12,12 @@ import loginRoutes from './routes/loginRoutes.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
 import registerRoutes from './routes/registerRoutes.js';
 import logoutRoutes from './routes/logoutRoutes.js';
+import editUserRoutes from './routes/editUserRoutes.js';
+import cookieParser from 'cookie-parser'; 
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 app.use('/', loginRoutes);
 app.use('/', userRoutes);
@@ -26,6 +29,7 @@ app.use('/', lessonContentRoutes);
 app.use('/', registerRoutes);
 app.use(errorMiddleware);
 app.use('/', logoutRoutes);
+app.use('/', editUserRoutes);
 
 sequelize.sync();
 console.log('Database synchronized');

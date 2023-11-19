@@ -1,10 +1,10 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 const { sign, verify } = jwt;
-import HTTP_STATUS_CODES from '../constants/httpStatusCodes.js';
+import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 
 const createTokens = (user) => {
   const accessToken = sign(
-    { username: user.user_name, id: user.id },
+    { username: user.user_name, id: user.user_id },
     "jwtsecretplschange"
   );
 
@@ -15,11 +15,17 @@ const validateToken = (req, res, next) => {
   const accessToken = req.cookies["access-token"];
 
   if (!accessToken)
-    return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: "User not Authenticated!" });
+    return res
+      .status(HTTP_STATUS_CODES.BAD_REQUEST)
+      .json({ error: "User not Authenticated!" });
 
   try {
     const validToken = verify(accessToken, "jwtsecretplschange");
     if (validToken) {
+      req.authUser = {
+        id: validToken.id,
+        username: validToken.username,
+      };
       req.authenticated = true;
       return next();
     }
@@ -28,7 +34,4 @@ const validateToken = (req, res, next) => {
   }
 };
 
-export { 
-  createTokens,
-  validateToken
-};
+export { createTokens, validateToken };
