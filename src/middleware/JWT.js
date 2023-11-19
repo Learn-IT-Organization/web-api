@@ -7,10 +7,9 @@ const createTokens = (user, req) => {
   const userAgent = req.headers["user-agent"] || "";
   const payload = {
     username: user.user_name,
-    id: user.id,
+    id: user.user_id,
     userAgent: userAgent,
   };
-
   const accessToken = sign(payload, jwtSecret, { expiresIn: "30d" });
 
   return accessToken;

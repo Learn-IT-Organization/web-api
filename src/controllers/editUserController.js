@@ -26,7 +26,7 @@ const editUserProfile = async (req, res) => {
 
     await user.save();
 
-    const accessToken = createTokens(user);
+    const accessToken = createTokens(user, req);
 
     res.cookie("access-token", accessToken, {
       maxAge: 60 * 60 * 24 * 30 * 1000,
