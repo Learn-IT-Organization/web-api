@@ -27,6 +27,10 @@ const validateToken = (req, res, next) => {
   try {
     const validToken = verify(accessToken, jwtSecret);
     if (validToken) {
+      req.authUser = {
+        id: validToken.id,
+        username: validToken.username,
+      };
       req.authenticated = true;
       return next();
     }
