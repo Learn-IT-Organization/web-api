@@ -8,6 +8,7 @@ const createTokens = (user, req) => {
   const payload = {
     username: user.user_name,
     id: user.user_id,
+    role: user.user_role,
     userAgent: userAgent,
   };
   const accessToken = sign(payload, jwtSecret, { expiresIn: "30d" });
@@ -29,6 +30,7 @@ const validateToken = (req, res, next) => {
       req.authUser = {
         id: validToken.id,
         username: validToken.username,
+        role: validToken.role
       };
       req.authenticated = true;
       return next();
