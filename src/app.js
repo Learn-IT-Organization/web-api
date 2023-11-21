@@ -13,6 +13,7 @@ import errorMiddleware from "./middleware/errorMiddleware.js";
 import registerRoutes from "./routes/registerRoutes.js";
 import logoutRoutes from "./routes/logoutRoutes.js";
 import editUserRoutes from "./routes/editUserRoutes.js";
+import userQuestionResponseRoutes from "./routes/userQuestionResponsesRoutes.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/", registerRoutes);
 app.use(errorMiddleware);
 app.use("/", logoutRoutes);
 app.use("/", editUserRoutes);
+app.use("/", userQuestionResponseRoutes);
 
 sequelize.sync();
 console.log("Database synchronized");
