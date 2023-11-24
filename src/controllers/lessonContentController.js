@@ -1,5 +1,6 @@
 import LessonContent from "../models/lessonContentModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
+import { RecordNotFoundError } from "../constants/errors.js";
 
 const createLessonContent = async (req, res) => {
   try {
@@ -21,12 +22,9 @@ const getLessonContentById = async (req, res) => {
   if (lessonContent != null) {
     res.status(HTTP_STATUS_CODES.CREATED).json(lessonContent);
   } else {
-    res.status(HTTP_STATUS_CODES.NOT_FOUND).json({});
+    const error = new RecordNotFoundError(lessonContentId);
+    res.status(error.statusCode).json(error.toJSON());
   }
 };
 
-export { 
-    createLessonContent, 
-    getAllLessonContents, 
-    getLessonContentById 
-};
+export { createLessonContent, getAllLessonContents, getLessonContentById };

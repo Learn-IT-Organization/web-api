@@ -2,6 +2,7 @@ import Course from "../models/courseModel.js";
 import Chapter from "../models/chapterModel.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
+import {RecordNotFoundError} from "../constants/errors.js";
 
 const createCourse = async (req, res) => {
   try {
@@ -23,7 +24,8 @@ const getCourseById = async (req, res) => {
   if (course != null) {
     res.status(HTTP_STATUS_CODES.OK).json(course);
   } else {
-    res.status(HTTP_STATUS_CODES.NOT_FOUND).json({});
+    const error = new RecordNotFoundError(courseId);
+    res.status(error.statusCode).json(error.toJSON());
   }
 };
 
