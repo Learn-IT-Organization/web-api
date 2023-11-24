@@ -2,6 +2,7 @@ import Course from "../models/courseModel.js";
 import Chapter from "../models/chapterModel.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
+import {RecordNotFoundError} from "../constants/errors.js";
 
 const createCourse = async (req, res) => {
   try {

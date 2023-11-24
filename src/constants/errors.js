@@ -17,11 +17,11 @@ class CustomError extends Error {
 
 class RecordNotFoundError extends CustomError {
   constructor(pk) {
-    super(`Record with ID ${pk} not found.`, 404, "NotFound");
+    super(`Record with ID ${pk} not found.`, 404, "RecordNotFound");
   }
 }
 
-export default {
+export {
   CustomError,
   RecordNotFoundError,
 };

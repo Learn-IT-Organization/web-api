@@ -1,5 +1,6 @@
 import Users from "../models/userModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
+import { RecordNotFoundError } from "../constants/errors.js";
 
 const createUser = async (req, res) => {
   try {

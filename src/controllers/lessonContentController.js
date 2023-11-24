@@ -1,5 +1,6 @@
 import LessonContent from "../models/lessonContentModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
+import { RecordNotFoundError } from "../constants/errors.js";
 
 const createLessonContent = async (req, res) => {
   try {
