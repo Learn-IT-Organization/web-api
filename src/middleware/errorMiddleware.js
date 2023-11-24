@@ -1,8 +1,10 @@
-import HTTP_STATUS_CODES from '../constants/httpStatusCodes.js';
+import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
+import CustomError from "../constants/errors.js";
 
-const errorHandlerMiddleware = (err, req, res, next) => {
+const errorHandlerMiddleware = (err, req, res) => {
   console.error(err.stack);
-  res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+  const error = new CustomError();
+  res.status(error.statusCode).json(error.toJSON());
 };
 
 export default errorHandlerMiddleware;

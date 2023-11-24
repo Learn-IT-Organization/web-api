@@ -2,6 +2,7 @@ import Chapter from "../models/chapterModel.js";
 import Lessons from "../models/lessonModel.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
+import RecordNotFoundError from "../constants/errors.js";
 
 const createChapter = async (req, res) => {
   try {
@@ -23,7 +24,8 @@ const getChapterById = async (req, res) => {
   if (chapter) {
     res.status(HTTP_STATUS_CODES.OK).json(chapter);
   } else {
-    res.status(HTTP_STATUS_CODES.NOT_FOUND).json({});
+    const error = new RecordNotFoundError(chapterId);
+    res.status(error.statusCode).json(error.toJSON());
   }
 };
 

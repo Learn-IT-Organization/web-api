@@ -21,12 +21,9 @@ const getLessonContentById = async (req, res) => {
   if (lessonContent != null) {
     res.status(HTTP_STATUS_CODES.CREATED).json(lessonContent);
   } else {
-    res.status(HTTP_STATUS_CODES.NOT_FOUND).json({});
+    const error = new RecordNotFoundError(lessonContentId);
+    res.status(error.statusCode).json(error.toJSON());
   }
 };
 
-export { 
-    createLessonContent, 
-    getAllLessonContents, 
-    getLessonContentById 
-};
+export { createLessonContent, getAllLessonContents, getLessonContentById };

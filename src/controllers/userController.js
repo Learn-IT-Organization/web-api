@@ -16,9 +16,14 @@ const getAllUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  const { id } = req.params;
-  const user = await Users.findByPk(id);
-  res.status(HTTP_STATUS_CODES.OK).json(user);
+  const userId = req.params.id;
+  const user = await Users.findByPk(userId);
+  if (user != null) {
+    res.status(HTTP_STATUS_CODES.OK).json(user);
+  } else {
+    const error = new RecordNotFoundError(userId);
+    res.status(error.statusCode).json(error.toJSON());
+  }
 };
 
 export { createUser, getAllUsers, getUserById };
