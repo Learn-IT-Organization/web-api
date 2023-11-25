@@ -6,26 +6,29 @@ import {
   getLessonsByChapterId,
   getQuestionsAnswersByChapterId,
 } from "../controllers/chapterController.js";
-import { validateToken } from "../middleware/JWT.js";
-import { checkUserRole } from "../middleware/roleMiddleware.js";
+import {
+  validateAdmin,
+  validateTeacher,
+  validateStudent,
+} from "../middleware/roleMiddleware.js";
 
 const router = Router();
 
-router.post("/chapters", validateToken, createChapter);
+router.post("/chapters", validateTeacher, createChapter);
 
-router.get("/chapters", validateToken, checkUserRole(['quest', 'student', 'teacher', 'admin']), getAllChapters);
+router.get("/chapters", validateStudent, getAllChapters);
 
-router.get("/chapter/:id", validateToken, getChapterById);
+router.get("/chapter/:id", validateStudent, getChapterById);
 
 router.get(
   "/chapters/:chapterId/lessons",
-  validateToken,
+  validateStudent,
   getLessonsByChapterId
 );
 
 router.get(
   "/chapters/:chapterId/questionsAnswers",
-  validateToken,
+  validateStudent,
   getQuestionsAnswersByChapterId
 );
 

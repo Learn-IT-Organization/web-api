@@ -6,21 +6,21 @@ import {
   getContentsByLessonId,
   getQuestionsAnswersByLessonId,
 } from "../controllers/lessonController.js";
-import { validateToken } from "../middleware/JWT.js";
+import { validateTeacher, validateStudent } from "../middleware/roleMiddleware.js";
 
 const router = Router();
 
-router.post("/lessons", validateToken, createLesson);
+router.post("/lessons", validateTeacher, createLesson);
 
-router.get("/lessons", validateToken, getAllLessons);
+router.get("/lessons", validateStudent, getAllLessons);
 
-router.get("/lesson/:id", validateToken, getLessonById);
+router.get("/lesson/:id", validateStudent, getLessonById);
 
-router.get("/lessons/:lessonId/contents", validateToken, getContentsByLessonId);
+router.get("/lessons/:lessonId/contents", validateStudent, getContentsByLessonId);
 
 router.get(
   "/lessons/:lessonId/questionsAnswers",
-  validateToken,
+  validateStudent,
   getQuestionsAnswersByLessonId
 );
 

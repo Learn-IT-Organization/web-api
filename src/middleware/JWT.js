@@ -30,7 +30,7 @@ const validateToken = (req, res, next) => {
       req.authUser = {
         id: validToken.id,
         username: validToken.username,
-        role: validToken.role
+        role: validToken.role,
       };
       req.authenticated = true;
       return next();
@@ -40,7 +40,4 @@ const validateToken = (req, res, next) => {
   }
 };
 
-export { 
-  createTokens,
-  validateToken
-};
+export { createTokens, validateToken };
