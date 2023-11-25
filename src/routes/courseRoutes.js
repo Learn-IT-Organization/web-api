@@ -6,21 +6,28 @@ import {
   getChaptersByCourseId,
   getQuestionsAnswersByCourseId,
 } from "../controllers/courseController.js";
-import { validateToken } from "../middleware/JWT.js";
+import {
+  validateStudent,
+  validateTeacher,
+} from "../middleware/roleMiddleware.js";
 
 const router = Router();
 
-router.post("/courses", validateToken, createCourse);
+router.post("/courses", validateTeacher, createCourse);
 
-router.get("/courses", validateToken, getAllCourses);
+router.get("/courses", validateStudent, getAllCourses);
 
-router.get("/course/:id", validateToken, getCourseById);
+router.get("/course/:id", validateStudent, getCourseById);
 
-router.get("/course/:courseId/chapters", validateToken, getChaptersByCourseId);
+router.get(
+  "/course/:courseId/chapters",
+  validateStudent,
+  getChaptersByCourseId
+);
 
 router.get(
   "/course/:courseId/questionsAnswers",
-  validateToken,
+  validateStudent,
   getQuestionsAnswersByCourseId
 );
 

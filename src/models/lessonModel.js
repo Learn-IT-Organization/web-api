@@ -47,6 +47,13 @@ const Lessons = sequelize.define('lessons', {
         validate: {
             notEmpty: true,
         }
+    },
+    lesson_tags : {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+        }
     }
 },
 {

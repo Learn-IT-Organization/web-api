@@ -4,14 +4,17 @@ import {
   getAllLessonContents,
   getLessonContentById,
 } from "../controllers/lessonContentController.js";
-import { validateToken } from "../middleware/JWT.js";
+import {
+  validateStudent,
+  validateTeacher,
+} from "../middleware/roleMiddleware.js";
 
 const router = Router();
 
-router.post("/lessonContents", validateToken, createLessonContent);
+router.post("/lessonContents", validateTeacher, createLessonContent);
 
-router.get("/lessonContents", validateToken, getAllLessonContents);
+router.get("/lessonContents", validateStudent, getAllLessonContents);
 
-router.get("/lessonContent/:id", validateToken, getLessonContentById);
+router.get("/lessonContent/:id", validateStudent, getLessonContentById);
 
 export default router;

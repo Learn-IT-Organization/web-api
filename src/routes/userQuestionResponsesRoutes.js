@@ -4,14 +4,17 @@ import {
   getAllResponses,
   getResponsesByUser,
 } from "../controllers/userQuestionResponseController.js";
-import { validateToken } from "../middleware/JWT.js";
+import {
+  validateStudent,
+  validateTeacher,
+} from "../middleware/roleMiddleware.js";
 
 const router = Router();
 
-router.post("/respond", validateToken, respond);
+router.post("/respond", validateTeacher, respond);
 
-router.get("/responses", validateToken, getAllResponses);
+router.get("/responses", validateStudent, getAllResponses);
 
-router.get("/userResponses/:id", validateToken, getResponsesByUser);
+router.get("/userResponses/:id", validateStudent, getResponsesByUser);
 
 export default router;

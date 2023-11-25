@@ -3,12 +3,15 @@ import {
   createQuestionsAnswers,
   getAllQuestionsAnswers,
 } from "../controllers/questionsAnswersController.js";
-import { validateToken } from "../middleware/JWT.js";
+import {
+  validateStudent,
+  validateTeacher,
+} from "../middleware/roleMiddleware.js";
 
 const router = Router();
 
-router.post("/questionsAnswers", validateToken, createQuestionsAnswers);
+router.post("/questionsAnswers", validateTeacher, createQuestionsAnswers);
 
-router.get("/questionsAnswers", validateToken, getAllQuestionsAnswers);
+router.get("/questionsAnswers", validateStudent, getAllQuestionsAnswers);
 
 export default router;
