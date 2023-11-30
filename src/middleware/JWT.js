@@ -11,9 +11,14 @@ const createTokens = (user, req) => {
     role: user.user_role,
     userAgent: userAgent,
   };
-  const accessToken = sign(payload, jwtSecret, { expiresIn: "30d" });
 
-  return accessToken;
+  const expiresIn = "30d";
+  const accessToken = sign(payload, jwtSecret, { expiresIn });
+
+  const decodedToken = verify(accessToken, jwtSecret);
+  const expiresAt = decodedToken.exp;
+
+  return { accessToken, expiresAt };
 };
 
 const validateToken = (req, res, next) => {
