@@ -14,7 +14,7 @@ const Users = sequelize.define('users', {
         },
         user_role: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             validate: {
                 notEmpty: true,
             }
@@ -57,7 +57,7 @@ const Users = sequelize.define('users', {
         },
         user_level: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             validate: {
                 notEmpty: true,
             }
