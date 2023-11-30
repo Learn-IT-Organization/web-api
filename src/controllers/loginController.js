@@ -6,17 +6,32 @@ import { createTokens } from "../middleware/JWT.js";
 const login = async (req, res) => {
   const { user_name, user_password } = req.body;
   const user = await Users.findOne({ where: { user_name: user_name } });
-  if (!user)
-    res
-      .status(HTTP_STATUS_CODES.NOT_FOUND)
-      .json({ success: false, error: "User not found" });
+  if (!user) {
+    const errorResponse = {
+      success: false,
+      data: null,
+      err: {
+        code: "SERVICE_CODE",
+        msg: "ERR_USER_NOT_FOUND",
+      },
+      servertime: Date.now(),
+    };
+    res.status(HTTP_STATUS_CODES.NOT_FOUND).json(errorResponse);
+  }
 
   const dbPassword = user.user_password;
   bcrypt.compare(user_password, dbPassword).then((match) => {
     if (!match) {
-      res
-        .status(HTTP_STATUS_CODES.BAD_REQUEST)
-        .json({ success: false, error: "Invalid password" });
+      const errorResponse = {
+        success: false,
+        data: null,
+        err: {
+          code: "SERVICE_CODE",
+          msg: "ERR_INVALID_PASSWORD",
+        },
+        servertime: Date.now(),
+      };
+      res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(errorResponse);
     } else {
       const { accessToken, expiresAt } = createTokens(user, req);
 
@@ -26,16 +41,18 @@ const login = async (req, res) => {
         secure: true,
       });
 
-      const responseData = {
+      const successResponse = {
         success: true,
         data: {
           name: "token",
           value: accessToken,
           expires: expiresAt,
         },
+        err: null,
         message: "Logged in successfully",
+        servertime: Date.now(),
       };
-      res.json(responseData);
+      res.json(successResponse);
     }
   });
 };
