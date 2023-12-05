@@ -6,6 +6,7 @@ import { createTokens } from "../middleware/JWT.js";
 const login = async (req, res) => {
   const { user_name, user_password } = req.body;
   const user = await Users.findOne({ where: { user_name: user_name } });
+
   if (!user) {
     const errorResponse = {
       success: false,
@@ -17,9 +18,25 @@ const login = async (req, res) => {
       servertime: Date.now(),
     };
     res.status(HTTP_STATUS_CODES.NOT_FOUND).json(errorResponse);
+    return; 
   }
 
   const dbPassword = user.user_password;
+
+  if (!dbPassword) {
+    const errorResponse = {
+      success: false,
+      data: null,
+      err: {
+        code: "SERVICE_CODE",
+        msg: "ERR_INVALID_PASSWORD",
+      },
+      servertime: Date.now(),
+    };
+    res.status(HTTP_STATUS_CODES.BAD_REQUEST).json(errorResponse);
+    return; 
+  }
+
   bcrypt.compare(user_password, dbPassword).then((match) => {
     if (!match) {
       const errorResponse = {
