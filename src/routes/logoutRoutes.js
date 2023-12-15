@@ -4,6 +4,6 @@ import { validateToken } from "../middleware/JWT.js";
 
 const router = Router();
 
-router.post("/logout", validateToken, logout);
+router.post("/logout", logout);
 
 export default router;

@@ -21,27 +21,27 @@ const createTokens = (user, req) => {
   return { accessToken, expiresAt };
 };
 
-const validateToken = (req, res, next) => {
+const validateToken = (req, res, next, ...roles) => {
   const accessToken = req.cookies["access-token"];
-
   if (!accessToken)
     return res
       .status(HTTP_STATUS_CODES.BAD_REQUEST)
       .json({ error: "User not Authenticated!" });
 
-  try {
-    const validToken = verify(accessToken, jwtSecret);
-    if (validToken) {
-      req.authUser = {
-        id: validToken.id,
-        username: validToken.username,
-        role: validToken.role,
-      };
-      req.authenticated = true;
-      return next();
+  const validToken = verify(accessToken, jwtSecret);
+  if (validToken) {
+    req.authUser = {
+      id: validToken.id,
+      username: validToken.username,
+      role: validToken.role,
+    };
+    req.authenticated = true;
+    if (roles.length == 0 || !roles.includes(validToken.role)) {
+      return res
+        .status(HTTP_STATUS_CODES.FORBIDDEN)
+        .json({ error: "Insufficient permissions" });
     }
-  } catch (err) {
-    return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: err });
+    return next();
   }
 };
 
