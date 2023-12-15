@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { editUserProfile } from "../controllers/editUserController.js";
-import { validateToken } from "../middleware/JWT.js";
+import { validateStudent } from "../middleware/roleMiddleware.js";
 const router = Router();
 
-router.put("/editUser", validateToken, editUserProfile);
+router.put("/editUser", validateStudent, editUserProfile);
 
 export default router;
