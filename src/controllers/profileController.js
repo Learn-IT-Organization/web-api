@@ -24,19 +24,22 @@ const profile = async (req, res) => {
     const responseData = {
       success: true,
       data: {
-        id: user.user_id,
-        role: user.user_role,
+        user_id: user.user_id,
+        user_role: user.user_role,
         first_name: user.first_name,
         last_name: user.last_name,
         user_name: user.user_name,
         user_password: user.user_password,
         gender: user.user_gender,
-        user_level: user.user_level
+        user_level: user.user_level,
+        user_photo: user.user_photo,
+        streak: user.streak
       },
       err: null,
       message: "Profile retrieved successfully",
       servertime: Date.now()
     };
+    console.log(responseData);
     res.json(responseData);
   } catch (err) {
     return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: err });

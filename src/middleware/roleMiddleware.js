@@ -1,15 +1,15 @@
-import { validateToken } from "./JWT.js";
+import { validateTokenAndRole } from "./JWT.js";
 
 const validateAdmin = (req, res, next) => {
-  validateToken(req, res, next, "admin");
+  validateTokenAndRole(req, res, next, "admin");
 };
 
 const validateTeacher = (req, res, next) => {
-  validateToken(req, res, next, "teacher", "admin");
+  validateTokenAndRole(req, res, next, "teacher", "admin");
 };
 
 const validateStudent = (req, res, next) => {
-  validateToken(req, res, next, "teacher", "admin", "student");
+  validateTokenAndRole (req, res, next, "teacher", "admin", "student");
 };
 
 export { validateTeacher, validateAdmin, validateStudent };
