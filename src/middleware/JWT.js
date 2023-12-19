@@ -21,7 +21,7 @@ const createTokens = (user, req) => {
   return { accessToken, expiresAt };
 };
 
-const validateToken = (req, res, next, ...roles) => {
+const validateTokenAndRole = (req, res, next, ...roles) => {
   const accessToken = req.cookies["access-token"];
   if (!accessToken)
     return res
@@ -45,4 +45,22 @@ const validateToken = (req, res, next, ...roles) => {
   }
 };
 
-export { createTokens, validateToken };
+const validateToken = (req, res, next) => {
+  const accessToken = req.cookies["access-token"];
+  if (!accessToken)
+    return res
+      .status(HTTP_STATUS_CODES.BAD_REQUEST)
+      .json({ error: "User not Authenticated!" });
+
+  const validToken = verify(accessToken, jwtSecret);
+  if (validToken) {
+    req.authUser = {
+      id: validToken.id,
+      username: validToken.username,
+      role: validToken.role,
+    };
+    req.authenticated = true;
+    return next();
+  }
+};
+export { createTokens, validateTokenAndRole , validateToken };

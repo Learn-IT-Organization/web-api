@@ -22,7 +22,6 @@ router.get("/chapter/:id", validateStudent, getChapterById);
 
 router.get(
   "/chapters/:chapterId/lessons",
-  validateStudent,
   getLessonsByChapterId
 );
 
