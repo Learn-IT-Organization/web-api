@@ -15,7 +15,7 @@ const router = Router();
 
 router.post("/courses", validateTeacher, createCourse);
 
-router.get("/courses", getAllCourses);
+router.get("/courses",validateStudent, getAllCourses);
 
 router.get("/course/:id", validateStudent, getCourseById);
 
