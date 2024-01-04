@@ -3,7 +3,7 @@ import pkg from "../../config/database.cjs";
 const { sequelize } = pkg;
 
 const UserQuestionResponse = sequelize.define(
-  'user_question_response',
+  'user_question_responses',
   {
     uqr_question_id: {
       type: DataTypes.INTEGER,
@@ -21,11 +21,11 @@ const UserQuestionResponse = sequelize.define(
     },
     is_correct: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     score: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     response_time: {
       type: DataTypes.DATE,
