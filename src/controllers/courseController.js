@@ -2,7 +2,7 @@ import Course from "../models/courseModel.js";
 import Chapter from "../models/chapterModel.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
-import {RecordNotFoundError} from "../constants/errors.js";
+import { RecordNotFoundError } from "../constants/errors.js";
 
 const createCourse = async (req, res) => {
   try {
@@ -61,7 +61,23 @@ const getQuestionsAnswersByCourseIdChapterIdLessonId = async (req, res) => {
     },
   });
   res.status(200).json(questionsAnswers);
-}
+};
+
+const getQuestionsAnswersFilteredByType = async (req, res) => {
+  const courseId = req.params.courseId;
+  const chapterId = req.params.chapterId;
+  const lessonId = req.params.lessonId;
+  const questionType = req.params.questionType;
+  const questionsAnswers = await QuestionsAnswers.findAll({
+    where: {
+      qa_course_id: courseId,
+      qa_chapter_id: chapterId,
+      qa_lesson_id: lessonId,
+      question_type: questionType,
+    },
+  });
+  res.status(200).json(questionsAnswers);
+};
 
 export {
   createCourse,
@@ -70,4 +86,5 @@ export {
   getChaptersByCourseId,
   getQuestionsAnswersByCourseId,
   getQuestionsAnswersByCourseIdChapterIdLessonId,
+  getQuestionsAnswersFilteredByType,
 };

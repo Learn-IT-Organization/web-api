@@ -6,6 +6,7 @@ import {
   getChaptersByCourseId,
   getQuestionsAnswersByCourseId,
   getQuestionsAnswersByCourseIdChapterIdLessonId,
+  getQuestionsAnswersFilteredByType
 } from "../controllers/courseController.js";
 import {
   validateStudent,
@@ -37,4 +38,9 @@ router.get(
   getQuestionsAnswersByCourseIdChapterIdLessonId
 );
 
+router.get(
+  "/course/:courseId/chapters/:chapterId/lesson/:lessonId/questionsAnswers/:questionType",
+  validateStudent,
+  getQuestionsAnswersFilteredByType
+);
 export default router;
