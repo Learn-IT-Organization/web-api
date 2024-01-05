@@ -39,20 +39,9 @@ const getContentsByLessonId = async (req, res) => {
   res.status(HTTP_STATUS_CODES.OK).json(contents);
 };
 
-const getQuestionsAnswersByLessonId = async (req, res) => {
-  const lessonId = req.params.lessonId;
-  const questionsAnswers = await QuestionsAnswers.findAll({
-    where: {
-      qa_lesson_id: lessonId,
-    },
-  });
-  res.status(HTTP_STATUS_CODES.OK).json(questionsAnswers);
-};
-
 export {
   createLesson,
   getAllLessons,
   getLessonById,
   getContentsByLessonId,
-  getQuestionsAnswersByLessonId,
 };
