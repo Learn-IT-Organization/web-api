@@ -20,11 +20,11 @@ const UserQuestionResponse = sequelize.define(
       allowNull: false,
     },
     is_correct: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
     score: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT,
       allowNull: true,
     },
     response_time: {
@@ -46,7 +46,7 @@ UserQuestionResponse.associate = (models) => {
       onDelete: "CASCADE",
     });
 
-    QuestionsAnswers.belongsTo(models.Users, {
+    UserQuestionResponse.belongsTo(models.Users, {
       foreignKey: "uqr_user_id",
       targetKey: "user_id",
       onDelete: "CASCADE",

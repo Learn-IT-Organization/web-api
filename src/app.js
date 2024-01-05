@@ -38,6 +38,10 @@ app.use("/", profileRoutes);
 sequelize.sync();
 console.log("Database synchronized");
 
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+});
+
 app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`);
 });
