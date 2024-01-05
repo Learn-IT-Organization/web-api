@@ -4,7 +4,6 @@ import {
   getAllChapters,
   getChapterById,
   getLessonsByChapterId,
-  getQuestionsAnswersByChapterId,
 } from "../controllers/chapterController.js";
 import {
   validateAdmin,
@@ -25,10 +24,5 @@ router.get(
   getLessonsByChapterId
 );
 
-router.get(
-  "/chapters/:chapterId/questionsAnswers",
-  validateStudent,
-  getQuestionsAnswersByChapterId
-);
 
 export default router;

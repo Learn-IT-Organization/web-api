@@ -5,6 +5,7 @@ import {
   getCourseById,
   getChaptersByCourseId,
   getQuestionsAnswersByCourseId,
+  getQuestionsAnswersByCourseIdChapterIdLessonId,
 } from "../controllers/courseController.js";
 import {
   validateStudent,
@@ -28,6 +29,12 @@ router.get(
   "/course/:courseId/questionsAnswers",
   validateStudent,
   getQuestionsAnswersByCourseId
+);
+
+router.get(
+  "/course/:courseId/chapters/:chapterId/lesson/:lessonId/questionsAnswers",
+  validateStudent,
+  getQuestionsAnswersByCourseIdChapterIdLessonId
 );
 
 export default router;
