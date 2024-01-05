@@ -39,20 +39,9 @@ const getLessonsByChapterId = async (req, res) => {
   res.status(HTTP_STATUS_CODES.OK).json(lessons);
 };
 
-const getQuestionsAnswersByChapterId = async (req, res) => {
-  const chapterId = req.params.chapterId;
-  const questionsAnswers = await QuestionsAnswers.findAll({
-    where: {
-      qa_chapter_id: chapterId,
-    },
-  });
-  res.status(HTTP_STATUS_CODES.OK).json(questionsAnswers);
-};
-
 export {
   createChapter,
   getAllChapters,
   getChapterById,
   getLessonsByChapterId,
-  getQuestionsAnswersByChapterId,
 };
