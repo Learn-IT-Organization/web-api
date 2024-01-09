@@ -6,7 +6,7 @@ import {
   getChaptersByCourseId,
   getQuestionsAnswersByCourseId,
   getQuestionsAnswersByCourseIdChapterIdLessonId,
-  getQuestionsAnswersFilteredByType
+  getQuestionsAnswersFilteredByType,
 } from "../controllers/courseController.js";
 import {
   validateStudent,
@@ -17,12 +17,13 @@ const router = Router();
 
 router.post("/courses", validateTeacher, createCourse);
 
-router.get("/courses",validateStudent, getAllCourses);
+router.get("/courses", validateStudent, getAllCourses);
 
 router.get("/course/:id", validateStudent, getCourseById);
 
 router.get(
   "/course/:courseId/chapters",
+  validateStudent,
   getChaptersByCourseId
 );
 

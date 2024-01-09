@@ -3,9 +3,20 @@ import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
 
 const respond = async (req, res) => {
-  const response = await UserQuestionResponse.create(req.body);
-  res.status(HTTP_STATUS_CODES.CREATED).json(response);
-  return response; // Return the response object
+  try {
+    await UserQuestionResponse.create(req.body);
+    res.status(HTTP_STATUS_CODES.CREATED).json({
+      success: true,
+      message: "User response recorded successfully.",
+      score: 0,
+    });
+  } catch (error) {
+    console.error("Error in respond:", error);
+    res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Failed to record user response.",
+    });
+  }
 };
 
 const getAllResponses = async (req, res) => {
@@ -27,7 +38,6 @@ const gradeMultipleChoiceAnswer = async (req, res) => {
   try {
     const { uqr_question_id, response } = req.body;
 
-    // Fetch the question using findByPk
     const question = await QuestionsAnswers.findByPk(uqr_question_id);
 
     if (!question || question.question_type !== "multiple choice") {
@@ -49,11 +59,10 @@ const gradeMultipleChoiceAnswer = async (req, res) => {
 
     const score = isCorrect ? 1 : 0;
 
-    // Update database with grading result
     const userResponse = await UserQuestionResponse.findOrCreate({
       where: {
         uqr_question_id,
-        uqr_user_id: req.user.id, // Assuming user information is available in req.user
+        uqr_user_id: req.user.id, 
       },
       defaults: {
         response: response,
@@ -63,7 +72,6 @@ const gradeMultipleChoiceAnswer = async (req, res) => {
       },
     });
 
-    // If not created, update the existing record
     if (!userResponse[1]) {
       await userResponse[0].update({
         response: response,
@@ -110,6 +118,7 @@ const handleUserResponse = async (req, res) => {
     res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
   }
 };
+
 
 
 export {
