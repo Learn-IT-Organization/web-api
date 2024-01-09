@@ -26,5 +26,30 @@ const getLessonContentById = async (req, res) => {
     res.status(error.statusCode).json(error.toJSON());
   }
 };
+const getLessonContent = async (req, res) => {
+  try {
+    const { courseId, chapterId, lessonId } = req.params;
+
+    const lesson = await LessonContent.findOne({
+      where: {
+        courseId: courseId,
+        chapterId: chapterId,
+        lessonId: lessonId,
+      },
+    });
+
+    if (!lesson) {
+      return res.status(HTTP_STATUS_CODES.NOT_FOUND).json({
+        error: "Lesson not found",
+      });
+    }
+
+    return res.status(HTTP_STATUS_CODES.OK).json(lesson);
+  } catch (error) {
+    return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+      error: "An error occurred while retrieving the lesson",
+    });
+  }
+};
 
 export { createLessonContent, getAllLessonContents, getLessonContentById };

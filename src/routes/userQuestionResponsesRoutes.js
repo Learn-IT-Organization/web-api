@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  respond,
   getAllResponses,
   getResponsesByUser,
   handleUserResponse,
@@ -8,7 +9,7 @@ import { validateStudent } from "../middleware/roleMiddleware.js";
 
 const router = Router();
 
-router.post("/respond", validateStudent, handleUserResponse);
+router.post("/respond", validateStudent, respond);
 
 router.get("/responses", validateStudent, getAllResponses);
 
