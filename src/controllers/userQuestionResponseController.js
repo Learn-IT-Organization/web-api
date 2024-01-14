@@ -1,22 +1,81 @@
 import UserQuestionResponse from "../models/userQuestionResponseModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
+import UserScore from "../models/userScoreModel.js";
 
 const respond = async (req, res) => {
   try {
-    await UserQuestionResponse.create(req.body);
+    await UserQuestionResponse.upsert(req.body);
+    const response = await gradeResponse(req.body);
     res.status(HTTP_STATUS_CODES.CREATED).json({
       success: true,
       message: "User response recorded successfully.",
-      score: 0,
+      score: response.score,
     });
   } catch (error) {
     console.error("Error in respond:", error);
     res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Failed to record user response.",
+      score: 0,
     });
   }
+};
+
+const gradeResponse = async ({ response_id, uqr_question_id, uqr_user_id }) => {
+  const response = await UserQuestionResponse.findOne({
+    where: {
+      uqr_question_id,
+      uqr_user_id,
+    },
+  });
+
+  const question = await QuestionsAnswers.findOne({
+    where: {
+      question_id: uqr_question_id,
+    },
+  });
+
+  const { answers, question_type } = question;
+  const userResponse = response.response.answer;
+
+  let score = 0;
+  let isCorrect = false;
+
+  if (question_type === "multiple_choice") {
+    const userAnswers = userResponse;
+
+    if (userAnswers.length === answers.length) {
+      const correctUserAnswers = userAnswers.filter(
+        (answer, index) => answer && answers[index].is_correct
+      );
+
+      const correctAnswers = answers.filter((answer) => answer.is_correct);
+      userAnswers.filter((answer) => !answer).length;
+
+      if (
+        userAnswers.filter((answer) => answer).length > correctAnswers.length
+      ) {
+        score = 0;
+      } else {
+        score = correctUserAnswers.length / correctAnswers.length;
+      }
+    }
+  } else if (question_type === "true_false") {
+    const userAnswer = userResponse[0];
+    const correctAnswer = answers[0].is_correct;
+
+    isCorrect = userAnswer === correctAnswer;
+    score = isCorrect ? 1 : 0;
+  }
+
+  await UserScore.create({
+    user_id: uqr_user_id,
+    response_id: response.response_id,
+    total_score: score,
+  });
+
+  return { score };
 };
 
 const getAllResponses = async (req, res) => {
@@ -34,97 +93,4 @@ const getResponsesByUser = async (req, res) => {
   res.status(HTTP_STATUS_CODES.OK).json(responses);
 };
 
-const gradeMultipleChoiceAnswer = async (req, res) => {
-  try {
-    const { uqr_question_id, response } = req.body;
-
-    const question = await QuestionsAnswers.findByPk(uqr_question_id);
-
-    if (!question || question.question_type !== "multiple choice") {
-      return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({
-        error: "Invalid question type for grading",
-      });
-    }
-
-    const correctAnswers = question.answers.filter((ans) => ans.isCorrect);
-    const userAnswers = response.answer;
-
-    const isCorrect = correctAnswers.every((correctAns) =>
-      userAnswers.some(
-        (userAns) =>
-          userAns.ansText === correctAns.ansText &&
-          userAns.isCorrect === correctAns.isCorrect
-      )
-    );
-
-    const score = isCorrect ? 1 : 0;
-
-    const userResponse = await UserQuestionResponse.findOrCreate({
-      where: {
-        uqr_question_id,
-        uqr_user_id: req.user.id, 
-      },
-      defaults: {
-        response: response,
-        is_correct: isCorrect ? 1 : 0,
-        score: score,
-        response_time: new Date(),
-      },
-    });
-
-    if (!userResponse[1]) {
-      await userResponse[0].update({
-        response: response,
-        is_correct: isCorrect ? 1 : 0,
-        score: score,
-        response_time: new Date(),
-      });
-    }
-
-    return res.json({
-      success: true,
-      message: "Grade updated successfully",
-      score: score,
-    });
-  } catch (error) {
-    console.error("Error in gradeMultipleChoiceAnswer:", error);
-    return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({
-      error: error.message,
-    });
-  }
-};
-
-const handleUserResponse = async (req, res) => {
-  try {
-    const response = await respond(req, res);
-
-    console.log("Response object:", response);
-
-    if (response && response.uqr_question_id) {
-      const question = await QuestionsAnswers.findByPk(
-        response.uqr_question_id
-      );
-
-      console.log("Question object:", question);
-
-      if (question.question_type === "multiple choice") {
-        console.log("Entering multiple choice grading");
-
-        await gradeMultipleChoiceAnswer(req, res);
-      }
-    }
-  } catch (error) {
-    console.error("Error in handleUserResponse:", error);
-    res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
-  }
-};
-
-
-
-export {
-  respond,
-  getAllResponses,
-  getResponsesByUser,
-  gradeMultipleChoiceAnswer,
-  handleUserResponse,
-};
+export { respond, getAllResponses, getResponsesByUser };
