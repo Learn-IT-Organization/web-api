@@ -3,17 +3,17 @@ import pkg from "../../config/database.cjs";
 const { sequelize } = pkg;
 
 const UserQuestionResponse = sequelize.define(
-  'user_question_responses',
+  "user_question_responses",
   {
     uqr_question_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
+      primaryKey: true,
     },
     uqr_user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
+      primaryKey: true,
     },
     response: {
       type: DataTypes.JSON,
@@ -30,7 +30,6 @@ const UserQuestionResponse = sequelize.define(
     response_time: {
       type: DataTypes.DATE,
       allowNull: false,
-      unique: true,
       defaultValue: DataTypes.NOW,
     },
   },

@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
-  getAllResponses,
+  respond,
   getResponsesByUser,
-  handleUserResponse,
+  getAllResponses,
 } from "../controllers/userQuestionResponseController.js";
 import { validateStudent } from "../middleware/roleMiddleware.js";
 
