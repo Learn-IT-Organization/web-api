@@ -25,6 +25,7 @@ router.get(
   validateStudent,
   getScoreByResponseId
 );
+router.post("/respond", validateStudent, respond);
 
 router.get("/responses", validateStudent, getAllResponses);
 
