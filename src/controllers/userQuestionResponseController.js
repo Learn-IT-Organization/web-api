@@ -1,10 +1,11 @@
 import UserQuestionResponse from "../models/userQuestionResponseModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
+import UserScore from "../models/userScoreModel.js";
 
 const respond = async (req, res) => {
   try {
-    await UserQuestionResponse.create(req.body);
+    await UserQuestionResponse.upsert(req.body);
     const response = await gradeResponse(req.body);
     res.status(HTTP_STATUS_CODES.CREATED).json({
       success: true,
@@ -21,7 +22,7 @@ const respond = async (req, res) => {
   }
 };
 
-const gradeResponse = async ({ uqr_question_id, uqr_user_id }) => {
+const gradeResponse = async ({ response_id, uqr_question_id, uqr_user_id }) => {
   const response = await UserQuestionResponse.findOne({
     where: {
       uqr_question_id,
@@ -39,26 +40,39 @@ const gradeResponse = async ({ uqr_question_id, uqr_user_id }) => {
   const userResponse = response.response.answer;
 
   let score = 0;
+  let isCorrect = false;
 
   if (question_type === "multiple_choice") {
-    const correctAnswers = answers.filter((answer) => answer.is_correct);
-    console.log("correctAnswers", correctAnswers);
-    const userAnswers = userResponse.filter((answer) => answer.is_correct);
-    console.log("userAnswers", userAnswers);
-    score = 1 / correctAnswers.length;
-    console.log("score", score);
-  } else if (question_type === "true_false") {
-    const correctAnswer = answers[0];
-    const userAnswer = userResponse[0];
+    const userAnswers = userResponse;
 
-    if (correctAnswer.is_correct === userAnswer.is_correct) {
-      score = 1;
+    if (userAnswers.length === answers.length) {
+      const correctUserAnswers = userAnswers.filter(
+        (answer, index) => answer && answers[index].is_correct
+      );
+
+      const correctAnswers = answers.filter((answer) => answer.is_correct);
+      userAnswers.filter((answer) => !answer).length;
+
+      if (
+        userAnswers.filter((answer) => answer).length > correctAnswers.length
+      ) {
+        score = 0;
+      } else {
+        score = correctUserAnswers.length / correctAnswers.length;
+      }
     }
+  } else if (question_type === "true_false") {
+    const userAnswer = userResponse[0];
+    const correctAnswer = answers[0].is_correct;
+
+    isCorrect = userAnswer === correctAnswer;
+    score = isCorrect ? 1 : 0;
   }
 
-  await response.update({
-    is_correct: score > 0,
-    score,
+  await UserScore.create({
+    user_id: uqr_user_id,
+    response_id: response.response_id,
+    total_score: score,
   });
 
   return { score };
