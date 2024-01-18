@@ -60,6 +60,20 @@ const getQuestionsAnswersByCourseIdChapterIdLessonId = async (req, res) => {
       qa_lesson_id: lessonId,
     },
   });
+  for(let question of questionsAnswers) {
+    switch(question.question_type){
+      case "multiple_choice":
+        question.answers = question.answers.map((answer) => {
+          return answer.option_text;
+        });
+        break;
+      case "true_false":
+        question.answers = question.answers.map((answer) => {
+          return answer.option_text;
+        });
+        break;
+    }
+  }
   res.status(200).json(questionsAnswers);
 };
 
