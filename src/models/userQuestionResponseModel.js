@@ -3,7 +3,7 @@ import pkg from "../../config/database.cjs";
 const { sequelize } = pkg;
 
 const UserQuestionResponse = sequelize.define(
-  "user_question_responses",
+  'user_question_responses',
   {
     response_id: {
       type: DataTypes.INTEGER,
@@ -27,6 +27,11 @@ const UserQuestionResponse = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
+    },
+    score: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0,
     },
   },
   {
