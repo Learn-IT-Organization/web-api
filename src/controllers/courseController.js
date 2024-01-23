@@ -60,8 +60,8 @@ const getQuestionsAnswersByCourseIdChapterIdLessonId = async (req, res) => {
       qa_lesson_id: lessonId,
     },
   });
-  for(let question of questionsAnswers) {
-    switch(question.question_type){
+  for (let question of questionsAnswers) {
+    switch (question.question_type) {
       case "multiple_choice":
         question.answers = question.answers.map((answer) => {
           return answer.option_text;
@@ -70,6 +70,15 @@ const getQuestionsAnswersByCourseIdChapterIdLessonId = async (req, res) => {
       case "true_false":
         question.answers = question.answers.map((answer) => {
           return answer.option_text;
+        });
+        break;
+      case "sorting":
+        question.answers = question.answers.map((answer) => {
+          return {
+            ansUpText: answer.ansUpText,
+            ansDownText: answer.ansDownText,
+            concepts: [...answer.up, ...answer.down],
+          };
         });
         break;
     }
