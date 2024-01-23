@@ -1,12 +1,17 @@
 import UserQuestionResponse from "../models/userQuestionResponseModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
-import UserScore from "../models/userScoreModel.js";
 
 const respond = async (req, res) => {
   try {
-    await UserQuestionResponse.upsert(req.body);
     const response = await gradeResponse(req.body);
+    await UserQuestionResponse.create({
+      uqr_question_id: req.body.uqr_question_id,
+      uqr_user_id: req.body.uqr_user_id,
+      response: req.body.response,
+      score: response.score,
+    });
+
     res.status(HTTP_STATUS_CODES.CREATED).json({
       success: true,
       message: "User response recorded successfully.",
@@ -22,14 +27,7 @@ const respond = async (req, res) => {
   }
 };
 
-const gradeResponse = async ({ response_id, uqr_question_id, uqr_user_id }) => {
-  const response = await UserQuestionResponse.findOne({
-    where: {
-      uqr_question_id,
-      uqr_user_id,
-    },
-  });
-
+const gradeResponse = async ({ uqr_question_id, uqr_user_id, response }) => {
   const question = await QuestionsAnswers.findOne({
     where: {
       question_id: uqr_question_id,
@@ -37,7 +35,7 @@ const gradeResponse = async ({ response_id, uqr_question_id, uqr_user_id }) => {
   });
 
   const { answers, question_type } = question;
-  const userResponse = response.response.answer;
+  const userResponse = response.answer;
 
   let score = 0;
   let isCorrect = false;
@@ -51,7 +49,6 @@ const gradeResponse = async ({ response_id, uqr_question_id, uqr_user_id }) => {
       );
 
       const correctAnswers = answers.filter((answer) => answer.is_correct);
-      userAnswers.filter((answer) => !answer).length;
 
       if (
         userAnswers.filter((answer) => answer).length > correctAnswers.length
@@ -68,12 +65,6 @@ const gradeResponse = async ({ response_id, uqr_question_id, uqr_user_id }) => {
     isCorrect = userAnswer === correctAnswer;
     score = isCorrect ? 1 : 0;
   }
-
-  await UserScore.create({
-    user_id: uqr_user_id,
-    response_id: response.response_id,
-    total_score: score,
-  });
 
   return { score };
 };
