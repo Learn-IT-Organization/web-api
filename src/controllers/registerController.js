@@ -1,8 +1,16 @@
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import Users from "../models/userModel.js";
 import bcrypt from "bcrypt";
+import multer from "multer";
 
+// Create a multer storage instance
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// Your registration route
 const register = async (req, res) => {
+  console.log("Request Body Size:", req.get("Content-Length"));
+
   const {
     user_role,
     first_name,
@@ -11,19 +19,24 @@ const register = async (req, res) => {
     user_password,
     gender,
     user_level,
-    user_photo,
-    streak, 
+    streak,
   } = req.body;
 
   try {
     const existingUser = await Users.findOne({
       where: { user_name: user_name },
     });
+
     if (existingUser) {
       return res
         .status(HTTP_STATUS_CODES.BAD_REQUEST)
         .json({ success: false, error: "User already exists" });
     }
+
+    // Check if a file is uploaded
+    const user_photo = req.file ? req.file.buffer.toString("base64") : null;
+    console.log("Received user_photo:", user_photo);
+
     const hashedPassword = await bcrypt.hash(user_password, 10);
 
     await Users.create({
@@ -46,4 +59,7 @@ const register = async (req, res) => {
   }
 };
 
-export { register };
+// Use multer middleware for handling file uploads
+const uploadMiddleware = upload.single("user_photo");
+
+export { register , uploadMiddleware};

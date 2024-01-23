@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { register } from "../controllers/registerController.js";
+import { register , uploadMiddleware } from "../controllers/registerController.js";
 
 const router = Router();
 
-router.post("/register", register);
+router.post("/register", uploadMiddleware, register);
 
 export default router;
