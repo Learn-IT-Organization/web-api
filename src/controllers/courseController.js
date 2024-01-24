@@ -90,6 +90,20 @@ const getQuestionsAnswersFilteredByType = async (req, res) => {
       question_type: questionType,
     },
   });
+  for(let question of questionsAnswers) {
+    switch(question.question_type){
+      case "multiple_choice":
+        question.answers = question.answers.map((answer) => {
+          return answer.option_text;
+        });
+        break;
+      case "true_false":
+        question.answers = question.answers.map((answer) => {
+          return answer.option_text;
+        });
+        break;
+    }
+  }
   res.status(200).json(questionsAnswers);
 };
 
