@@ -42,14 +42,11 @@ const gradeResponse = async ({ uqr_question_id, uqr_user_id, response }) => {
 
   if (question_type === "multiple_choice") {
     const userAnswers = userResponse;
-
     if (userAnswers.length === answers.length) {
       const correctUserAnswers = userAnswers.filter(
         (answer, index) => answer && answers[index].is_correct
       );
-
       const correctAnswers = answers.filter((answer) => answer.is_correct);
-
       if (
         userAnswers.filter((answer) => answer).length > correctAnswers.length
       ) {
@@ -61,9 +58,37 @@ const gradeResponse = async ({ uqr_question_id, uqr_user_id, response }) => {
   } else if (question_type === "true_false") {
     const userAnswer = userResponse[0];
     const correctAnswer = answers[0].is_correct;
-
     isCorrect = userAnswer === correctAnswer;
     score = isCorrect ? 1 : 0;
+  } else if (question_type === "sorting") {
+    const userUp = response.up;
+    const userDown = response.down;
+
+    const correctUp = answers[0].up;
+    const correctDown = answers[0].down;
+
+    let upPartialScore = 0;
+    let downPartialScore = 0;
+
+    correctUp.forEach((correctConcept) => {
+      if (userUp.includes(correctConcept)) {
+        upPartialScore += 1;
+      }
+    });
+
+    correctDown.forEach((correctConcept) => {
+      if (userDown.includes(correctConcept)) {
+        downPartialScore += 1;
+      }
+    });
+
+    const totalPartialScore = upPartialScore + downPartialScore;
+    const maxScore = correctUp.length + correctDown.length;
+
+    score = totalPartialScore / maxScore;
+    isCorrect = totalPartialScore > 0;
+
+    return { score, isCorrect, partialScore: totalPartialScore, maxScore };
   }
 
   return { score };
