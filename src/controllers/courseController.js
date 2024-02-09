@@ -111,6 +111,15 @@ const getQuestionsAnswersFilteredByType = async (req, res) => {
           return answer.option_text;
         });
         break;
+      case "sorting":
+        question.answers = question.answers.map((answer) => {
+          return {
+            ansUpText: answer.ansUpText,
+            ansDownText: answer.ansDownText,
+            concepts: [...answer.up, ...answer.down],
+          };
+        });
+        break;
     }
   }
   res.status(200).json(questionsAnswers);
