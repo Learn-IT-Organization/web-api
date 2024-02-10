@@ -11,19 +11,20 @@ const register = async (req, res) => {
     user_password,
     gender,
     user_level,
-    user_photo,
-    streak, 
+    streak,
   } = req.body;
 
   try {
     const existingUser = await Users.findOne({
       where: { user_name: user_name },
     });
+
     if (existingUser) {
       return res
         .status(HTTP_STATUS_CODES.BAD_REQUEST)
         .json({ success: false, error: "User already exists" });
     }
+
     const hashedPassword = await bcrypt.hash(user_password, 10);
 
     await Users.create({
@@ -34,7 +35,6 @@ const register = async (req, res) => {
       user_password: hashedPassword,
       gender: gender,
       user_level: user_level,
-      user_photo: user_photo,
       streak: streak,
     });
 

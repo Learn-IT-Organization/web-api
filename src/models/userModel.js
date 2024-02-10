@@ -1,5 +1,5 @@
-import DataTypes from 'sequelize';
-import pkg from '../../config/database.cjs';
+import DataTypes from "sequelize";
+import pkg from "../../config/database.cjs";
 const { sequelize } = pkg;
 
 const Users = sequelize.define(
@@ -59,13 +59,6 @@ const Users = sequelize.define(
     },
     user_level: {
       type: DataTypes.STRING,
-      allowNull: true,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    user_photo: {
-      type: DataTypes.BLOB("long"),
       allowNull: true,
       validate: {
         notEmpty: true,

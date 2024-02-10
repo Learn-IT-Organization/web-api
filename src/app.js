@@ -1,7 +1,6 @@
 import express from "express";
 import database from "../config/database.cjs";
 import { config } from "../config/config.js";
-const { sequelize } = database;
 import userRoutes from "./routes/userRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import chapterRoutes from "./routes/chapterRoutes.js";
@@ -14,12 +13,15 @@ import registerRoutes from "./routes/registerRoutes.js";
 import logoutRoutes from "./routes/logoutRoutes.js";
 import editUserRoutes from "./routes/editUserRoutes.js";
 import userQuestionResponseRoutes from "./routes/userQuestionResponsesRoutes.js";
-import cookieParser from "cookie-parser";
 import profileRoutes from "./routes/profileRoutes.js";
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 
 const app = express();
-app.use(express.json());
 app.use(cookieParser());
+
+app.use(bodyParser.json({ limit: "100mb" }));
+app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 
 app.use("/", loginRoutes);
 app.use("/", userRoutes);
@@ -29,12 +31,13 @@ app.use("/", lessonRoutes);
 app.use("/", questionsAnswersRoutes);
 app.use("/", lessonContentRoutes);
 app.use("/", registerRoutes);
-app.use(errorMiddleware);
 app.use("/", logoutRoutes);
 app.use("/", editUserRoutes);
 app.use("/", userQuestionResponseRoutes);
 app.use("/", profileRoutes);
+app.use(errorMiddleware);
 
+const { sequelize } = database;
 sequelize.sync();
 console.log("Database synchronized");
 
