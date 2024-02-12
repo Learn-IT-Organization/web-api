@@ -35,7 +35,7 @@ const gradeResponse = async ({ uqr_question_id, uqr_user_id, response }) => {
   });
 
   const { answers, question_type } = question;
-  const userResponse = response.answer;
+  const userResponse = response;
 
   let score = 0;
   let isCorrect = false;
