@@ -7,11 +7,13 @@ import {
   getQuestionsAnswersByCourseId,
   getQuestionsAnswersByCourseIdChapterIdLessonId,
   getQuestionsAnswersFilteredByType,
+  getMyCourses,
 } from "../controllers/courseController.js";
 import {
   validateStudent,
   validateTeacher,
 } from "../middleware/roleMiddleware.js";
+import { validateToken } from "../middleware/JWT.js";
 
 const router = Router();
 
@@ -44,4 +46,7 @@ router.get(
   validateStudent,
   getQuestionsAnswersFilteredByType
 );
+
+router.get("/myCourses", validateToken, getMyCourses);
+
 export default router;
