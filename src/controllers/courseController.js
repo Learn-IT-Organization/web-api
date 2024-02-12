@@ -1,8 +1,10 @@
 import Course from "../models/courseModel.js";
 import Chapter from "../models/chapterModel.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
+import UserQuestionResponse from "../models/userQuestionResponseModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import { RecordNotFoundError } from "../constants/errors.js";
+import { validateToken } from "../middleware/JWT.js";
 
 const createCourse = async (req, res) => {
   try {
@@ -99,8 +101,8 @@ const getQuestionsAnswersFilteredByType = async (req, res) => {
       question_type: questionType,
     },
   });
-  for(let question of questionsAnswers) {
-    switch(question.question_type){
+  for (let question of questionsAnswers) {
+    switch (question.question_type) {
       case "multiple_choice":
         question.answers = question.answers.map((answer) => {
           return answer.option_text;
@@ -125,6 +127,47 @@ const getQuestionsAnswersFilteredByType = async (req, res) => {
   res.status(200).json(questionsAnswers);
 };
 
+const getMyCourses = async (req, res) => {
+  try {
+    await validateToken(req, res, () => {});
+    const userId = req.authUser.id;
+
+    const userResponses = await UserQuestionResponse.findAll({
+      where: {
+        uqr_user_id: userId,
+      },
+      attributes: ["uqr_question_id"],
+    });
+
+    const questionIds = userResponses.map(
+      (response) => response.uqr_question_id
+    );
+
+    const questions = await QuestionsAnswers.findAll({
+      where: {
+        question_id: questionIds,
+      },
+      attributes: ["qa_course_id"],
+    });
+
+    const courseIds = questions.map((question) => question.qa_course_id);
+
+    const myCourses = await Course.findAll({
+      where: {
+        course_id: courseIds,
+      },
+    });
+
+    res.status(HTTP_STATUS_CODES.OK).json(myCourses);
+  } catch (error) {
+    console.error("Error in getMyCourses:", error);
+    res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Failed to fetch user courses.",
+    });
+  }
+};
+
 export {
   createCourse,
   getAllCourses,
@@ -133,4 +176,5 @@ export {
   getQuestionsAnswersByCourseId,
   getQuestionsAnswersByCourseIdChapterIdLessonId,
   getQuestionsAnswersFilteredByType,
+  getMyCourses,
 };
