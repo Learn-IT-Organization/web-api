@@ -3,6 +3,7 @@ import Chapter from "../models/chapterModel.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
 import UserQuestionResponse from "../models/userQuestionResponseModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
+import Lessons from "../models/lessonModel.js";
 import { RecordNotFoundError } from "../constants/errors.js";
 import { validateToken } from "../middleware/JWT.js";
 
@@ -38,7 +39,16 @@ const getChaptersByCourseId = async (req, res) => {
       chapter_course_id: courseId,
     },
   });
-  res.status(HTTP_STATUS_CODES.OK).json(chapters);
+  const chaptersAndLessons = [];
+  for (const chapter of chapters) {
+    const lessons = await Lessons.findAll({
+      where: {
+        lesson_chapter_id: chapter.chapter_id,
+      },
+    });
+    chaptersAndLessons.push({ chapter, lessons });
+  }
+  res.status(HTTP_STATUS_CODES.OK).json(chaptersAndLessons);
 };
 
 const getQuestionsAnswersByCourseId = async (req, res) => {
