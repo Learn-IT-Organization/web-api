@@ -24,5 +24,4 @@ router.get(
   getLessonsByChapterId
 );
 
-
 export default router;
