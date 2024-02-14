@@ -1,6 +1,8 @@
 import UserQuestionResponse from "../models/userQuestionResponseModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
+import Lessons from "../models/lessonModel.js";
+import { validateToken } from "../middleware/JWT.js";
 
 const respond = async (req, res) => {
   try {
@@ -100,7 +102,8 @@ const getAllResponses = async (req, res) => {
 };
 
 const getResponsesByUser = async (req, res) => {
-  const userId = req.params.id;
+  await validateToken(req, res, () => {});
+  const userId = req.authUser.id;
   const responses = await UserQuestionResponse.findAll({
     where: {
       uqr_user_id: userId,
@@ -109,4 +112,73 @@ const getResponsesByUser = async (req, res) => {
   res.status(HTTP_STATUS_CODES.OK).json(responses);
 };
 
-export { respond, getAllResponses, getResponsesByUser };
+const getLessonResult = async (req, res) => {
+  await validateToken(req, res, () => {});
+  const userId = req.authUser.id;
+  const lessonId = req.params.lessonId;
+
+  const questions = await QuestionsAnswers.findAll({
+    where: {
+      qa_lesson_id: lessonId,
+    },
+  });
+
+  const responses = await UserQuestionResponse.findAll({
+    where: {
+      uqr_user_id: userId,
+      uqr_question_id: questions.map((question) => question.question_id),
+    },
+  });
+
+  const userScore = responses.reduce((acc, response) => {
+    return acc + response.score;
+  }, 0);
+
+  const totalScore = responses.length;
+
+  await Lessons.update(
+    { lesson_score: userScore * 10, is_completed: true },
+    { where: { lesson_id: lessonId } }
+  );
+
+  res
+    .status(HTTP_STATUS_CODES.OK)
+    .json({ userScore: userScore * 10, totalScore: totalScore * 10 });
+};
+
+const deleteLessonResult = async (lessonId) => {
+  await Lessons.update(
+    { lesson_score: null, is_completed: false },
+    { where: { lesson_id: lessonId } }
+  );
+};
+
+const deleteUserResponsesByLesson = async (req, res) => {
+  await validateToken(req, res, () => {});
+  const userId = req.authUser.id;
+  const lessonId = req.params.lessonId;
+
+  const questions = await QuestionsAnswers.findAll({
+    where: {
+      qa_lesson_id: lessonId,
+    },
+  });
+
+  await UserQuestionResponse.destroy({
+    where: {
+      uqr_user_id: userId,
+      uqr_question_id: questions.map((question) => question.question_id),
+    },
+  });
+  deleteLessonResult(lessonId);
+
+  res.status(HTTP_STATUS_CODES.OK).json({ success: true, message: "Deleted"});
+};
+
+export {
+  respond,
+  getAllResponses,
+  getResponsesByUser,
+  getLessonResult,
+  deleteUserResponsesByLesson,
+};
