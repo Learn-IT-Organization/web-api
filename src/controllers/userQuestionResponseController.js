@@ -136,10 +136,17 @@ const getLessonResult = async (req, res) => {
 
   const totalScore = responses.length;
 
-  await Lessons.update(
-    { lesson_score: userScore * 10, is_completed: true },
-    { where: { lesson_id: lessonId } }
-  );
+  if (questions.length == responses.length) {
+    await Lessons.update(
+      { lesson_score: userScore * 10, is_completed: true },
+      { where: { lesson_id: lessonId } }
+    );
+  } else {
+    await Lessons.update(
+      { lesson_score: userScore * 10, is_completed: false },
+      { where: { lesson_id: lessonId } }
+    );
+  }
 
   res
     .status(HTTP_STATUS_CODES.OK)
@@ -172,7 +179,7 @@ const deleteUserResponsesByLesson = async (req, res) => {
   });
   deleteLessonResult(lessonId);
 
-  res.status(HTTP_STATUS_CODES.OK).json({ success: true, message: "Deleted"});
+  res.status(HTTP_STATUS_CODES.OK).json({ success: true, message: "Deleted" });
 };
 
 export {
