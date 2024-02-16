@@ -156,24 +156,41 @@ const calculateLessonResult = async (lessonId, userId) => {
   });
 
   if (!userRecord) {
-    const isCompleted = questions.length === responses.length && questions.length > 0;
+    const isCompleted =
+      questions.length === responses.length && questions.length > 0;
 
-    await UserLessonProgress.create({
-      user_id: userId,
-      lesson_id: lessonId,
-      lesson_score: userScore * 10,
-      is_completed: isCompleted,
-    });
+    if (questions.length === responses.length) {
+      await UserLessonProgress.create({
+        user_id: userId,
+        lesson_id: lessonId,
+        lesson_score: userScore * 10,
+        is_completed: isCompleted,
+      });
+    } else {
+      await UserLessonProgress.create({
+        user_id: userId,
+        lesson_id: lessonId,
+        lesson_score: 0,
+        is_completed: isCompleted,
+      });
+    }
   } else {
-    const isCompleted = questions.length === responses.length && questions.length > 0;
+    const isCompleted =
+      questions.length === responses.length && questions.length > 0;
 
-    await UserLessonProgress.update(
-      { lesson_score: 0, is_completed: isCompleted },
-      { where: { lesson_id: lessonId, user_id: userId } }
-    );
-    deleteUserResponsesByLesson(lessonId, userId);
+    if (questions.length === responses.length) {
+      await UserLessonProgress.update(
+        { lesson_score: userScore * 10, is_completed: isCompleted },
+        { where: { lesson_id: lessonId, user_id: userId } }
+      );
+    } else {
+      await UserLessonProgress.update(
+        { lesson_score: 0, is_completed: isCompleted },
+        { where: { lesson_id: lessonId, user_id: userId } }
+      );
+      deleteUserResponsesByLesson(lessonId, userId);
+    }
   }
-
   return { userScore, totalScore };
 };
 
@@ -184,7 +201,8 @@ const deleteLessonResult = async (lessonId, userId) => {
   );
 
   await UserQuestionResponse.destroy({
-    where: { uqr_user_id: userId ,
+    where: {
+      uqr_user_id: userId,
       uqr_question_id: await QuestionsAnswers.findAll({
         where: {
           qa_lesson_id: lessonId,
@@ -192,7 +210,6 @@ const deleteLessonResult = async (lessonId, userId) => {
       }).map((question) => question.question_id),
     },
   });
-  
 };
 
 const deleteUserResponsesByLesson = async (lessonId, userId) => {
