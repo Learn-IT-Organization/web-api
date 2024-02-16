@@ -1,6 +1,39 @@
 import LessonContent from "../models/lessonContentModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import { RecordNotFoundError } from "../constants/errors.js";
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// const createLessonContent = async (req, res) => {
+//   try {
+//     upload.single('attachments')(req, res, async (err) => {
+//       if (err) {
+//         return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: 'Error uploading file.' });
+//       }
+
+//       try {
+//         const { content_type, url, content_course_id, content_chapter_id, content_lesson_id } = req.body;
+//         const attachments = req.file.buffer; 
+
+//         const newLessonContent = await LessonContent.create({
+//           content_type,
+//           url,
+//           attachments,
+//           content_course_id,
+//           content_chapter_id,
+//           content_lesson_id,
+//         });
+//         res.status(HTTP_STATUS_CODES.CREATED).json(newLessonContent);
+//       } catch (error) {
+//         res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: 'Error uploading file.' });
+//       }
+//     });
+//   } catch (error) {
+//     res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
+//   }
+// };
 
 const createLessonContent = async (req, res) => {
   try {
@@ -26,30 +59,5 @@ const getLessonContentById = async (req, res) => {
     res.status(error.statusCode).json(error.toJSON());
   }
 };
-const getLessonContent = async (req, res) => {
-  try {
-    const { courseId, chapterId, lessonId } = req.params;
 
-    const lesson = await LessonContent.findOne({
-      where: {
-        courseId: courseId,
-        chapterId: chapterId,
-        lessonId: lessonId,
-      },
-    });
-
-    if (!lesson) {
-      return res.status(HTTP_STATUS_CODES.NOT_FOUND).json({
-        error: "Lesson not found",
-      });
-    }
-
-    return res.status(HTTP_STATUS_CODES.OK).json(lesson);
-  } catch (error) {
-    return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({
-      error: "An error occurred while retrieving the lesson",
-    });
-  }
-};
-
-export { createLessonContent, getAllLessonContents, getLessonContentById };
+export { createLessonContent, getAllLessonContents, getLessonContentById,  };

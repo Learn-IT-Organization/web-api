@@ -15,6 +15,6 @@ router.get("/lessons", validateStudent, getAllLessons);
 
 router.get("/lesson/:id", validateStudent, getLessonById);
 
-router.get("/lessons/:lessonId/contents", validateStudent, getContentsByLessonId);
+router.get("/lesson/:lessonId/contents", validateStudent, getContentsByLessonId);
 
 export default router;
