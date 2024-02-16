@@ -9,16 +9,16 @@ const profile = async (req, res) => {
     const user = await Users.findOne({ where: { user_id: userId } });
 
     if (!user) {
-        const errorResponse = {
-            success: false,
-            data: null,
-            err: {
-              code: "TOKEN_ERROR",
-              msg: "No token was sent!",
-            },
-            servertime: Date.now(),
-          };
-          res.status(HTTP_STATUS_CODES.NOT_FOUND).json(errorResponse);
+      const errorResponse = {
+        success: false,
+        data: null,
+        err: {
+          code: "TOKEN_ERROR",
+          msg: "No token was sent!",
+        },
+        servertime: Date.now(),
+      };
+      res.status(HTTP_STATUS_CODES.NOT_FOUND).json(errorResponse);
     }
 
     const responseData = {
@@ -33,11 +33,12 @@ const profile = async (req, res) => {
         gender: user.user_gender,
         user_level: user.user_level,
         user_photo: user.user_photo,
-        streak: user.streak
+        streak: user.streak,
+        last_response_time: user.last_response_time,
       },
       err: null,
       message: "Profile retrieved successfully",
-      servertime: Date.now()
+      servertime: Date.now(),
     };
     console.log(responseData);
     res.json(responseData);

@@ -71,6 +71,10 @@ const Users = sequelize.define(
         notEmpty: true,
       },
     },
+    last_response_time: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     timestamps: false,

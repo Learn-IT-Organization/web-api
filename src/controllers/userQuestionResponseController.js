@@ -2,12 +2,14 @@ import UserQuestionResponse from "../models/userQuestionResponseModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
 import Lessons from "../models/lessonModel.js";
+import Users from "../models/userModel.js";
 import { validateToken } from "../middleware/JWT.js";
 import UserLessonProgress from "../models/userLessonProgress.js";
 
 const respond = async (req, res) => {
   try {
     const response = await gradeResponse(req.body);
+
     await UserQuestionResponse.create({
       uqr_question_id: req.body.uqr_question_id,
       uqr_user_id: req.body.uqr_user_id,
@@ -27,6 +29,29 @@ const respond = async (req, res) => {
       message: "Failed to record user response.",
       score: 0,
     });
+  }
+
+  const user = await Users.findByPk(req.body.uqr_user_id);
+
+  if (user.last_response_time === null) {
+    await Users.update(
+      { streak: 1, last_response_time: new Date() },
+      { where: { user_id: req.body.uqr_user_id } }
+    );
+  } else {
+    const timeSinceLastResponse = new Date() - user.last_response_time;
+    console.log(timeSinceLastResponse);
+    if (timeSinceLastResponse > 86400000 && timeSinceLastResponse < 172800000) {
+      await Users.update(
+        { streak: user.streak + 1, last_response_time: new Date() },
+        { where: { user_id: req.body.uqr_user_id } }
+      );
+    } else if (timeSinceLastResponse >= 172800000) {
+      await Users.update(
+        { streak: 1, last_response_time: new Date() },
+        { where: { user_id: req.body.uqr_user_id } }
+      );
+    }
   }
 };
 
