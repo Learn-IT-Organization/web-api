@@ -177,7 +177,7 @@ const calculateLessonResult = async (lessonId, userId) => {
   } else {
     const isCompleted =
       questions.length === responses.length && questions.length > 0;
-      
+
     if (questions.length === responses.length) {
       await UserLessonProgress.update(
         { lesson_score: userScore * 10, is_completed: isCompleted },
@@ -188,6 +188,7 @@ const calculateLessonResult = async (lessonId, userId) => {
         { lesson_score: 0, is_completed: isCompleted },
         { where: { lesson_id: lessonId, user_id: userId } }
       );
+      deleteUserResponsesByLesson(lessonId, userId);
     }
   }
   return { userScore, totalScore };
