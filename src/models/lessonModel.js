@@ -57,15 +57,6 @@ const Lessons = sequelize.define(
         notEmpty: true,
       },
     },
-    lesson_score: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    is_completed: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true,
-      defaultValue: false,
-    },
   },
   {
     timestamps: false,
