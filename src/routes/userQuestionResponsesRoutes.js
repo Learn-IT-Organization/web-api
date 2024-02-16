@@ -3,8 +3,7 @@ import {
   respond,
   getResponsesByUser,
   getAllResponses,
-  getLessonResult,
-  deleteUserResponsesByLesson
+  getLessonsResult
 } from "../controllers/userQuestionResponseController.js";
 import { validateStudent } from "../middleware/roleMiddleware.js";
 import { validateToken } from "../middleware/JWT.js";
@@ -19,8 +18,6 @@ router.get("/responses", validateStudent, getAllResponses);
 
 router.get("/userResponses/:id", validateStudent, getResponsesByUser);
 
-router.get("/lessonResult/:lessonId", validateToken, getLessonResult);
-
-router.get("/deleteResponses/:lessonId", validateToken, deleteUserResponsesByLesson);
+router.get("/lessonResult", validateToken, getLessonsResult);
 
 export default router;

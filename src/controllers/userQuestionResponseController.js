@@ -3,6 +3,7 @@ import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import QuestionsAnswers from "../models/questionsAnswersModel.js";
 import Lessons from "../models/lessonModel.js";
 import { validateToken } from "../middleware/JWT.js";
+import UserLessonProgress from "../models/userLessonProgress.js";
 
 const respond = async (req, res) => {
   try {
@@ -112,15 +113,28 @@ const getResponsesByUser = async (req, res) => {
   res.status(HTTP_STATUS_CODES.OK).json(responses);
 };
 
-const getLessonResult = async (req, res) => {
+const getLessonsResult = async (req, res) => {
   await validateToken(req, res, () => {});
-  const userId = req.authUser.id;
-  const lessonId = req.params.lessonId;
 
+  const userId = req.authUser.id;
+
+  const lessons = await Lessons.findAll();
+  const lessonResults = [];
+
+  for (const lesson of lessons) {
+    await calculateLessonResult(lesson.lesson_id, userId);
+    const userRecord = await UserLessonProgress.findOne({
+      where: { user_id: userId, lesson_id: lesson.lesson_id },
+    });
+    lessonResults.push(userRecord);
+  }
+
+  res.status(HTTP_STATUS_CODES.OK).json(lessonResults);
+};
+
+const calculateLessonResult = async (lessonId, userId) => {
   const questions = await QuestionsAnswers.findAll({
-    where: {
-      qa_lesson_id: lessonId,
-    },
+    where: { qa_lesson_id: lessonId },
   });
 
   const responses = await UserQuestionResponse.findAll({
@@ -130,41 +144,58 @@ const getLessonResult = async (req, res) => {
     },
   });
 
-  const userScore = responses.reduce((acc, response) => {
-    return acc + response.score;
-  }, 0);
+  const userScore = responses.reduce(
+    (acc, response) => acc + response.score,
+    0
+  );
 
-  const totalScore = responses.length;
+  const totalScore = questions.length;
 
-  if (questions.length == responses.length) {
-    await Lessons.update(
-      { lesson_score: userScore * 10, is_completed: true },
-      { where: { lesson_id: lessonId } }
-    );
+  const userRecord = await UserLessonProgress.findOne({
+    where: { user_id: userId, lesson_id: lessonId },
+  });
+
+  if (!userRecord) {
+    const isCompleted = questions.length === responses.length && questions.length > 0;
+
+    await UserLessonProgress.create({
+      user_id: userId,
+      lesson_id: lessonId,
+      lesson_score: userScore * 10,
+      is_completed: isCompleted,
+    });
   } else {
-    await Lessons.update(
-      { lesson_score: userScore * 10, is_completed: false },
-      { where: { lesson_id: lessonId } }
+    const isCompleted = questions.length === responses.length && questions.length > 0;
+
+    await UserLessonProgress.update(
+      { lesson_score: 0, is_completed: isCompleted },
+      { where: { lesson_id: lessonId, user_id: userId } }
     );
+    deleteUserResponsesByLesson(lessonId, userId);
   }
 
-  res
-    .status(HTTP_STATUS_CODES.OK)
-    .json({ userScore: userScore * 10, totalScore: totalScore * 10 });
+  return { userScore, totalScore };
 };
 
-const deleteLessonResult = async (lessonId) => {
-  await Lessons.update(
+const deleteLessonResult = async (lessonId, userId) => {
+  await UserLessonProgress.update(
     { lesson_score: null, is_completed: false },
-    { where: { lesson_id: lessonId } }
+    { where: { lesson_id: lessonId, user_id: userId } }
   );
+
+  await UserQuestionResponse.destroy({
+    where: { uqr_user_id: userId ,
+      uqr_question_id: await QuestionsAnswers.findAll({
+        where: {
+          qa_lesson_id: lessonId,
+        },
+      }).map((question) => question.question_id),
+    },
+  });
+  
 };
 
-const deleteUserResponsesByLesson = async (req, res) => {
-  await validateToken(req, res, () => {});
-  const userId = req.authUser.id;
-  const lessonId = req.params.lessonId;
-
+const deleteUserResponsesByLesson = async (lessonId, userId) => {
   const questions = await QuestionsAnswers.findAll({
     where: {
       qa_lesson_id: lessonId,
@@ -177,7 +208,8 @@ const deleteUserResponsesByLesson = async (req, res) => {
       uqr_question_id: questions.map((question) => question.question_id),
     },
   });
-  deleteLessonResult(lessonId);
+
+  deleteLessonResult(lessonId, userId);
 
   res.status(HTTP_STATUS_CODES.OK).json({ success: true, message: "Deleted" });
 };
@@ -186,6 +218,6 @@ export {
   respond,
   getAllResponses,
   getResponsesByUser,
-  getLessonResult,
+  getLessonsResult,
   deleteUserResponsesByLesson,
 };
