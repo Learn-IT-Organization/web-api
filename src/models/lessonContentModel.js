@@ -26,27 +26,6 @@ const LessonContent = sequelize.define('lesson_contents', {
             notEmpty: true,
         }
     },
-    attachments: {
-        type: DataTypes.BLOB,
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        }
-    },
-    content_course_id:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        }
-    },
-    content_chapter_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        }
-    },
     content_lesson_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -64,16 +43,6 @@ LessonContent.associate = (models) => {
         foreignKey: 'content_lesson_id',
         onDelete: 'CASCADE',
     });
-
-    Content.belongsTo(models.Chapters, {
-        foreignKey: 'content_chapter_id',
-        onDelete: 'CASCADE',
-    });
-
-    Content.belongsTo(models.Courses, {
-        foreignKey: 'content_course_id',
-        onDelete: 'CASCADE',
-    })
 };
 
 export default LessonContent;
