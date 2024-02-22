@@ -140,7 +140,6 @@ const getResponsesByUser = async (req, res) => {
 
 const getLessonsResult = async (req, res) => {
   await validateToken(req, res, () => {});
-
   const userId = req.authUser.id;
 
   const lessons = await Lessons.findAll();
