@@ -8,6 +8,7 @@ import {
   getQuestionsAnswersByCourseIdChapterIdLessonId,
   getQuestionsAnswersFilteredByType,
   getMyCourses,
+  calculateChapterScore,
 } from "../controllers/courseController.js";
 import {
   validateStudent,
@@ -48,5 +49,7 @@ router.get(
 );
 
 router.get("/myCourses", validateToken, getMyCourses);
+
+router.get("/course/:courseId/chapter/:chapterId/score", calculateChapterScore);
 
 export default router;

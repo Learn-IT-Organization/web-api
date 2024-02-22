@@ -6,6 +6,7 @@ import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import Lessons from "../models/lessonModel.js";
 import { RecordNotFoundError } from "../constants/errors.js";
 import { validateToken } from "../middleware/JWT.js";
+import UserLessonProgress from "../models/userLessonProgress.js";
 
 const createCourse = async (req, res) => {
   try {
@@ -178,6 +179,55 @@ const getMyCourses = async (req, res) => {
   }
 };
 
+const calculateChapterScore = async (req, res) => {
+  await validateToken(req, res, () => {});
+  const userId = req.authUser.id;
+  const courseId = req.params.courseId;
+  const chapterId = req.params.chapterId;
+
+  const chapters = await Chapter.findAll({
+    where: {
+      chapter_course_id: courseId,
+      chapter_id: chapterId,
+    },
+  });
+  console.log(chapters);
+  let userScore = 0;
+  let userLessonProgress;
+  let lessons;
+  let totalLessons = 0;
+  let totalUserlessons = 0;
+
+  for (const chapter of chapters) {
+    lessons = await Lessons.findAll({
+      where: {
+        lesson_chapter_id: chapter.chapter_id,
+      },
+    });
+    for (const lesson of lessons) {
+      userLessonProgress = await UserLessonProgress.findAll({
+        where: {
+          user_id: userId,
+          lesson_id: lesson.lesson_id,
+        },
+      });
+      for (const progress of userLessonProgress) {
+        userScore += progress.lesson_score;
+        if (progress.is_completed == true) {
+          totalUserlessons += userLessonProgress.length;
+        }
+      }
+    }
+    totalLessons += lessons.length;
+  }
+  res.status(HTTP_STATUS_CODES.OK).json({
+    userScore: userScore,
+    isCompleted: totalLessons == totalUserlessons && totalLessons > 0,
+    lessonsCompleted: totalUserlessons,
+    totalLessons: totalLessons,
+  });
+};
+
 export {
   createCourse,
   getAllCourses,
@@ -187,4 +237,5 @@ export {
   getQuestionsAnswersByCourseIdChapterIdLessonId,
   getQuestionsAnswersFilteredByType,
   getMyCourses,
+  calculateChapterScore,
 };
