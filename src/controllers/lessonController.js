@@ -1,7 +1,6 @@
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import LessonContent from "../models/lessonContentModel.js";
 import Lessons from "../models/lessonModel.js";
-import QuestionsAnswers from "../models/questionsAnswersModel.js";
 import { RecordNotFoundError } from "../constants/errors.js";
 
 const createLesson = async (req, res) => {
@@ -21,13 +20,21 @@ const getAllLessons = async (req, res) => {
 const getLessonById = async (req, res) => {
   const lessonId = req.params.id;
   const lesson = await Lessons.findByPk(lessonId);
+
   if (lesson != null) {
+    const maxDescriptionLength = 60;
+
+    if (lesson.dataValues.lesson_description.length > maxDescriptionLength) {
+      lesson.dataValues.lesson_description = lesson.lesson_description.substring(0, maxDescriptionLength) + "...";
+    }
+
     res.status(HTTP_STATUS_CODES.OK).json(lesson);
   } else {
     const error = new RecordNotFoundError(lessonId);
     res.status(error.statusCode).json(error.toJSON());
   }
 };
+
 
 const getContentsByLessonId = async (req, res) => {
   const lessonId = req.params.lessonId;

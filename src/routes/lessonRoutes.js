@@ -5,7 +5,10 @@ import {
   getLessonById,
   getContentsByLessonId,
 } from "../controllers/lessonController.js";
-import { validateTeacher, validateStudent } from "../middleware/roleMiddleware.js";
+import {
+  validateTeacher,
+  validateStudent,
+} from "../middleware/roleMiddleware.js";
 
 const router = Router();
 
@@ -15,6 +18,9 @@ router.get("/lessons", validateStudent, getAllLessons);
 
 router.get("/lesson/:id", validateStudent, getLessonById);
 
-router.get("/lesson/:lessonId/contents", validateStudent, getContentsByLessonId);
-
+router.get(
+  "/lesson/:lessonId/contents",
+  validateStudent,
+  getContentsByLessonId
+);
 export default router;
