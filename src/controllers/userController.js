@@ -1,6 +1,7 @@
 import Users from "../models/userModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import { RecordNotFoundError } from "../constants/errors.js";
+import { validateToken } from "../middleware/JWT.js";
 
 const createUser = async (req, res) => {
   try {
@@ -17,7 +18,8 @@ const getAllUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  const userId = req.params.id;
+  await validateToken(req, res, () => {});
+  const userId = req.authUser.id;
   const user = await Users.findByPk(userId);
   if (user != null) {
     res.status(HTTP_STATUS_CODES.OK).json(user);
