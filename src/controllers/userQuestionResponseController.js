@@ -224,14 +224,16 @@ const deleteLessonResult = async (lessonId, userId) => {
     { where: { lesson_id: lessonId, user_id: userId } }
   );
 
+  const questions = await QuestionsAnswers.findAll({
+    where: {
+      qa_lesson_id: lessonId,
+    },
+  });
+
   await UserQuestionResponse.destroy({
     where: {
       uqr_user_id: userId,
-      uqr_question_id: await QuestionsAnswers.findAll({
-        where: {
-          qa_lesson_id: lessonId,
-        },
-      }).map((question) => question.question_id),
+      uqr_question_id: questions.map((question) => question.question_id),
     },
   });
 };
@@ -251,8 +253,6 @@ const deleteUserResponsesByLesson = async (lessonId, userId) => {
   });
 
   deleteLessonResult(lessonId, userId);
-
-  res.status(HTTP_STATUS_CODES.OK).json({ success: true, message: "Deleted" });
 };
 
 const getUserResultsWithValidation = async (req, res) => {
@@ -293,13 +293,19 @@ const getUserResultsWithValidation = async (req, res) => {
 const getAnswerText = (response, singleUserResponse) => {
   if (response.question_type === "multiple_choice") {
     const userResponses = singleUserResponse[0]?.response;
-    const selectedOptions = userResponses
-      ?.map((selected, index) =>
-        selected ? response.answers[index].option_text : null
-      )
-      .filter(Boolean);
 
-    return selectedOptions.join(", ");
+    if (userResponses) {
+      const selectedOptions = userResponses
+        .map((selected, index) =>
+          selected ? response.answers[index].option_text : null
+        )
+        .filter(Boolean);
+
+      if (selectedOptions) {
+        return selectedOptions.join(", ");
+      }
+    }
+    return "User response not available";
   } else if (response.question_type === "true_false") {
     return singleUserResponse[0]?.response[0];
   } else if (response.question_type === "sorting") {
