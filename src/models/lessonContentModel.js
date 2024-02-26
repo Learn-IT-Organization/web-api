@@ -42,7 +42,7 @@ const LessonContent = sequelize.define('lesson_contents', {
     },
     content_description: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         validate: {
             notEmpty: true,
         }
