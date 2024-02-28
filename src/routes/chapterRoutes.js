@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createChapter,
+  sendToken,
   getAllChapters,
   getChapterById,
   getLessonsByChapterId,
@@ -14,6 +15,8 @@ import {
 const router = Router();
 
 router.post("/chapters", validateTeacher, createChapter);
+
+router.post("/FCM_token", validateStudent, sendToken);
 
 router.get("/chapters", validateStudent, getAllChapters);
 

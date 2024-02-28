@@ -1,14 +1,44 @@
 import Chapter from "../models/chapterModel.js";
 import Lessons from "../models/lessonModel.js";
-import QuestionsAnswers from "../models/questionsAnswersModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import { RecordNotFoundError } from "../constants/errors.js";
+import admin from 'firebase-admin';
+let registeredTokens = [];
+
+const sendToken = async (req, res) => {
+  try {
+    const token = req.body.token;
+    registeredTokens.push(token); 
+    console.log('Token:', token);
+    res.status(HTTP_STATUS_CODES.OK).json({ message: 'Token received' });
+  } catch (error) {
+    console.error('Error receiving token:', error);
+    res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
+  }
+}
 
 const createChapter = async (req, res) => {
-  try {
+  try {  
     const chapter = await Chapter.create(req.body);
+
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleString()
+    
+    const message = {
+      data: {
+        isNewChapter: 'true',
+      },
+      notification: {
+        title: 'New chapter added!',
+        body: req.body.chapter_name + ' chapter has been added to the course at ' + formattedDate,
+      },
+    };
+
+    await admin.messaging().sendToDevice(registeredTokens, message);
+
     res.status(HTTP_STATUS_CODES.CREATED).json(chapter);
   } catch (error) {
+    console.error('Error creating chapter or sending push notification:', error);
     res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
   }
 };
@@ -41,6 +71,7 @@ const getLessonsByChapterId = async (req, res) => {
 
 export {
   createChapter,
+  sendToken,
   getAllChapters,
   getChapterById,
   getLessonsByChapterId,
