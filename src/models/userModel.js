@@ -75,6 +75,10 @@ const Users = sequelize.define(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    reset_code: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
   },
   {
     timestamps: false,
