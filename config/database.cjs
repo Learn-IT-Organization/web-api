@@ -2,6 +2,13 @@
 const Sequelize = require("sequelize");
 const config = require("./config.json")[process.env.NODE_ENV || "development"];
 
+const admin = require("firebase-admin");
+const serviceAccount = require("./learnit-eb4b1-firebase-adminsdk-zoel7-9291c6204d.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
 const sequelize = new Sequelize(
   config.database,
   config.username,

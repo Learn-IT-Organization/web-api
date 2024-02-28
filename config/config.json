@@ -1,5 +1,4 @@
 {
-  "port": 3306,
   "development": {
     "username": "mysqluser",
     "password": "4RkD.JPfiXNg",
