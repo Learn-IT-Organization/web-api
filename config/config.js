@@ -1,5 +1,5 @@
 export const config = {
-    port: 1026,
+    port: 3306,
   };
 export const pass = "mbvo pngx tkxp lqwc";
   
