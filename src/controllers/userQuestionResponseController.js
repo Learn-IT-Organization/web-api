@@ -142,7 +142,7 @@ const getLessonsResult = async (req, res) => {
   await validateToken(req, res, () => {});
   const userId = req.authUser.id;
 
-  const lessons = await Lessons.findAll();
+  const lessons = await Lessons.findAll({ where: { lesson_type: "exercise" } });
   const lessonResults = [];
 
   for (const lesson of lessons) {

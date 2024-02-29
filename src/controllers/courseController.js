@@ -202,6 +202,7 @@ const calculateChapterScore = async (req, res) => {
     lessons = await Lessons.findAll({
       where: {
         lesson_chapter_id: chapter.chapter_id,
+        lesson_type: "exercise",
       },
     });
     for (const lesson of lessons) {
