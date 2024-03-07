@@ -1,20 +1,22 @@
 import Chapter from "../models/chapterModel.js";
 import Lessons from "../models/lessonModel.js";
+import Tokens from "../models/tokensModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import { RecordNotFoundError } from "../constants/errors.js";
 import admin from 'firebase-admin';
-let registeredTokens = [];
 
 const sendToken = async (req, res) => {
   try {
-    const token = req.body.token;
-    registeredTokens.push(token); 
-    console.log('Token:', token);
-    res.status(HTTP_STATUS_CODES.OK).json({ message: 'Token received' });
+    const token = await Tokens.create(req.body);
+    res.status(HTTP_STATUS_CODES.CREATED).json(token);
   } catch (error) {
-    console.error('Error receiving token:', error);
     res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
   }
+}
+
+const getAllTokens = async (req, res) => {
+  const tokens = await Tokens.findAll();
+  res.status(HTTP_STATUS_CODES.OK).json(tokens);
 }
 
 const createChapter = async (req, res) => {
@@ -34,7 +36,9 @@ const createChapter = async (req, res) => {
       },
     };
 
-    await admin.messaging().sendToDevice(registeredTokens, message);
+    const tokens = await Tokens.findAll();
+    const tokenNames = tokens.map(token => token.token_name);
+    await admin.messaging().sendToDevice(tokenNames, message);
 
     res.status(HTTP_STATUS_CODES.CREATED).json(chapter);
   } catch (error) {
@@ -72,6 +76,7 @@ const getLessonsByChapterId = async (req, res) => {
 export {
   createChapter,
   sendToken,
+  getAllTokens,
   getAllChapters,
   getChapterById,
   getLessonsByChapterId,

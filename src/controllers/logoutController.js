@@ -2,7 +2,6 @@ import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 
 const logout = (req, res) => {
   try {
-    // Törlés az "access-token" cookie-ból
     res.clearCookie("access-token");
 
     res.json({ success: true, message: "Logged out successfully" });
