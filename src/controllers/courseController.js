@@ -87,10 +87,11 @@ const getQuestionsAnswersByCourseIdChapterIdLessonId = async (req, res) => {
         break;
       case "sorting":
         question.answers = question.answers.map((answer) => {
+          const shuffledConcepts = shuffle([...answer.up, ...answer.down]);
           return {
             ansUpText: answer.ansUpText,
             ansDownText: answer.ansDownText,
-            concepts: [...answer.up, ...answer.down],
+            concepts: shuffledConcepts,
           };
         });
         break;
@@ -98,6 +99,23 @@ const getQuestionsAnswersByCourseIdChapterIdLessonId = async (req, res) => {
   }
   res.status(200).json(questionsAnswers);
 };
+
+function shuffle(array) {
+  let currentIndex = array.length,
+    randomIndex;
+
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+}
 
 const getQuestionsAnswersFilteredByType = async (req, res) => {
   const courseId = req.params.courseId;
@@ -126,10 +144,11 @@ const getQuestionsAnswersFilteredByType = async (req, res) => {
         break;
       case "sorting":
         question.answers = question.answers.map((answer) => {
+          const shuffledConcepts = shuffle([...answer.up, ...answer.down]);
           return {
             ansUpText: answer.ansUpText,
             ansDownText: answer.ansDownText,
-            concepts: [...answer.up, ...answer.down],
+            concepts: shuffledConcepts,
           };
         });
         break;
