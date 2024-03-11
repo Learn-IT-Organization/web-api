@@ -390,9 +390,15 @@ const checkSortingCorrectness = (correctResponse, userResponse) => {
   console.log("user response", userResponse[0]?.response);
   console.log("correct response", correctResponse.answers[0]);
 
+  const arraysEqual = (arr1, arr2) => {
+    const sortedArr1 = arr1.slice().sort();
+    const sortedArr2 = arr2.slice().sort();
+    return JSON.stringify(sortedArr1) === JSON.stringify(sortedArr2);
+  };
+
   const correct =
-    JSON.stringify(correctUpList) === JSON.stringify(userUpList) &&
-    JSON.stringify(correctDownList) === JSON.stringify(userDownList);
+    arraysEqual(correctUpList, userUpList) &&
+    arraysEqual(correctDownList, userDownList);
 
   const responseText = correct
     ? "Correct!"
