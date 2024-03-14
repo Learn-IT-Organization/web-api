@@ -350,20 +350,24 @@ const checkMultipleChoiceCorrectness = (correctResponse, userResponse) => {
           .filter(Boolean)
       : [];
 
-  const correct = arraysEqual(correctOptions, userSelectedOptions);
-  const responseText = correct
-    ? "Correct answer!"
-    : `Incorrect, correct answer(s): ${correctOptions.join(", ")}`;
+  const score = userResponse[0]?.score || 0; 
+  let correct = false;
+  let responseText = "";
+  console.log("score", score);
+  if (score === 1) {
+    correct = true;
+    responseText = "Correct answer!";
+  } else if (score > 0 && score < 1) {
+    correct = true;
+    responseText = `Partially correct, the correct option(s): ${correctOptions.join(
+      ", "
+    )}`;
+  } else {
+    correct = false;
+    responseText = `Incorrect, correct answer(s): ${correctOptions.join(", ")}`;
+  }
 
   return { correct, responseText };
-};
-
-const arraysEqual = (arr1, arr2) => {
-  if (arr1.length !== arr2.length) return false;
-  for (let i = 0; i < arr1.length; i++) {
-    if (!arr2.includes(arr1[i])) return false;
-  }
-  return true;
 };
 
 const checkTrueFalseCorrectness = (correctResponse, userResponse) => {
@@ -389,6 +393,7 @@ const checkSortingCorrectness = (correctResponse, userResponse) => {
 
   console.log("user response", userResponse[0]?.response);
   console.log("correct response", correctResponse.answers[0]);
+  var score = userResponse[0]?.score || 0;
 
   const arraysEqual = (arr1, arr2) => {
     const sortedArr1 = arr1.slice().sort();
@@ -396,16 +401,22 @@ const checkSortingCorrectness = (correctResponse, userResponse) => {
     return JSON.stringify(sortedArr1) === JSON.stringify(sortedArr2);
   };
 
-  const correct =
+  let correct =
     arraysEqual(correctUpList, userUpList) &&
     arraysEqual(correctDownList, userDownList);
 
-  const responseText = correct
+  let responseText = correct
     ? "Correct!"
     : `Incorrect, correct order: ${correctResponse.answers[0]?.ansUpText}: ${correctUpList}, ${correctResponse.answers[0]?.ansDownText}: ${correctDownList}`;
 
+  if (score > 0 && score < 1) {
+    correct = true;
+    responseText = `Partially correct, the correct order: ${correctResponse.answers[0]?.ansUpText}: ${correctUpList}, ${correctResponse.answers[0]?.ansDownText}: ${correctDownList}`;
+  }
+
   return { correct, responseText };
 };
+
 
 export {
   respond,
