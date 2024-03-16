@@ -25,7 +25,7 @@ const validateTokenAndRole = (req, res, next, ...roles) => {
   const accessToken = req.cookies["access-token"];
   if (!accessToken)
     return res
-      .status(HTTP_STATUS_CODES.BAD_REQUEST)
+      .status(HTTP_STATUS_CODES.UNAUTHORIZED)
       .json({ error: "User not Authenticated!" });
 
   const validToken = verify(accessToken, jwtSecret);
