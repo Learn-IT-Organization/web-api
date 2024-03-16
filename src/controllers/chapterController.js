@@ -24,7 +24,7 @@ const createChapter = async (req, res) => {
     const chapter = await Chapter.create(req.body);
 
     const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleString()
+    const formattedDate = currentDate.toLocaleString('en-US', { timeZone: 'Europe/Romania' });
     
     const message = {
       data: {
