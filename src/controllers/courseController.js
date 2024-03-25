@@ -95,6 +95,18 @@ const getQuestionsAnswersByCourseIdChapterIdLessonId = async (req, res) => {
           };
         });
         break;
+      case "matching":
+        const leftSides = question.answers.map((answer) => answer.textLeft);
+        const rightSides = question.answers.map((answer) => answer.textRight);
+
+        shuffle(leftSides);
+        shuffle(rightSides);
+
+        question.answers = leftSides.map((left, index) => ({
+          textLeft: left,
+          textRight: rightSides[index],
+        }));
+        break;
     }
   }
   res.status(200).json(questionsAnswers);
@@ -151,6 +163,18 @@ const getQuestionsAnswersFilteredByType = async (req, res) => {
             concepts: shuffledConcepts,
           };
         });
+        break;
+      case "matching":
+        const leftSides = question.answers.map((answer) => answer.textLeft);
+        const rightSides = question.answers.map((answer) => answer.textRight);
+
+        shuffle(leftSides);
+        shuffle(rightSides);
+
+        question.answers = leftSides.map((left, index) => ({
+          textLeft: left,
+          textRight: rightSides[index],
+        }));
         break;
     }
   }

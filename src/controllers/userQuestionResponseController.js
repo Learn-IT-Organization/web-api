@@ -117,8 +117,35 @@ const gradeResponse = async ({ uqr_question_id, uqr_user_id, response }) => {
     isCorrect = totalPartialScore > 0;
 
     return { score, isCorrect, partialScore: totalPartialScore, maxScore };
-  }
+  } else if (question_type === "matching") {
+    const userAnswers = userResponse;
+    const correctAnswers = answers.map((answer) => ({
+      first: answer.textLeft,
+      second: answer.textRight,
+    }));
 
+    let correctPairs = 0;
+    let totalPairs = correctAnswers.length;
+    console.log("correctAnswers", correctAnswers);
+    console.log("userAnswers", userAnswers);
+    correctAnswers.forEach((correctPair) => {
+      const userPair = userAnswers.find(
+        (userPair) =>
+          userPair.first === correctPair.first &&
+          userPair.second === correctPair.second
+      );
+      if (userPair) {
+        correctPairs += 1;
+      }
+    });
+
+    score = correctPairs / totalPairs;
+    isCorrect = score === 1;
+    console.log("score", score);
+    if (score > 0 && score < 1) {
+      isCorrect = true;
+    }
+  }
   return { score };
 };
 
@@ -318,6 +345,17 @@ const getAnswerText = (response, singleUserResponse) => {
       ": " +
       singleUserResponse[0]?.response.down.join(", ")
     );
+  } else if (response.question_type === "matching") {
+    const userResponses = singleUserResponse[0]?.response;
+
+    if (userResponses) {
+      const formattedResponse = userResponses.map((pair) => {
+        return `${pair.first} - ${pair.second}`;
+      });
+
+      return formattedResponse.join(", ");
+    }
+    return "User response not available";
   } else {
     return "Unsupported question type";
   }
@@ -331,6 +369,8 @@ const checkCorrectness = (correctResponse, userResponse) => {
       return checkTrueFalseCorrectness(correctResponse, userResponse);
     case "sorting":
       return checkSortingCorrectness(correctResponse, userResponse);
+    case "matching":
+      return checkMatchingCorrectness(correctResponse, userResponse);
     default:
       return { correct: false, responseText: "Unsupported question type" };
   }
@@ -350,7 +390,7 @@ const checkMultipleChoiceCorrectness = (correctResponse, userResponse) => {
           .filter(Boolean)
       : [];
 
-  const score = userResponse[0]?.score || 0; 
+  const score = userResponse[0]?.score || 0;
   let correct = false;
   let responseText = "";
   console.log("score", score);
@@ -394,7 +434,6 @@ const checkSortingCorrectness = (correctResponse, userResponse) => {
   console.log("user response", userResponse[0]?.response);
   console.log("correct response", correctResponse.answers[0]);
   var score = userResponse[0]?.score || 0;
-
   const arraysEqual = (arr1, arr2) => {
     const sortedArr1 = arr1.slice().sort();
     const sortedArr2 = arr2.slice().sort();
@@ -417,6 +456,53 @@ const checkSortingCorrectness = (correctResponse, userResponse) => {
   return { correct, responseText };
 };
 
+const checkMatchingCorrectness = (correctResponse, userResponse) => {
+  const correctPairs = correctResponse.answers.map((ans) => ({
+    first: ans.textLeft,
+    second: ans.textRight,
+  }));
+
+  const userPairs = userResponse[0]?.response;
+
+  if (!userPairs) {
+    return { correct: false, responseText: "User did not provide an answer." };
+  }
+
+  let correctPairsFound = 0;
+  let responseText = "";
+
+  for (const pair of correctPairs) {
+    const foundPair = userPairs.find(
+      (userPair) =>
+        userPair.first === pair.first && userPair.second === pair.second
+    );
+
+    if (foundPair) {
+      correctPairsFound++;
+    }
+  }
+
+  const correctPercentage = (correctPairsFound / correctPairs.length) * 100;
+  let correct = false;
+
+  if (correctPercentage === 100) {
+    correct = true;
+    responseText = "Correct!";
+  } else if (correctPercentage > 0) {
+    correct = true;
+    responseText = `Partially correct. Correct pairs are: `;
+    responseText += correctPairs
+      .map((pair) => `${pair.first}-${pair.second}`)
+      .join(", ");
+  } else {
+    responseText = "Incorrect. Correct pairs are: ";
+    responseText += correctPairs
+      .map((pair) => `${pair.first}-${pair.second}`)
+      .join(", ");
+  }
+
+  return { correct, responseText };
+};
 
 export {
   respond,
