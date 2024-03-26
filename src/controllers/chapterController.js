@@ -23,16 +23,16 @@ const createChapter = async (req, res) => {
   try {  
     const chapter = await Chapter.create(req.body);
 
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleString('en-US', { timeZone: 'Europe/Romania' });
-    
+    const currentDate = new Date(Date.now());
+    console.log('Current date:', currentDate);
+
     const message = {
       data: {
         isNewChapter: 'true',
       },
       notification: {
         title: 'New chapter added!',
-        body: req.body.chapter_name + ' chapter has been added to the course at ' + formattedDate,
+        body: req.body.chapter_name + ' chapter has been added to the course at ' + currentDate,
       },
     };
 
