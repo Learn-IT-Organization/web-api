@@ -47,6 +47,7 @@ const TeacherRequest = sequelize.define(
     is_approved: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: "pending",
       validate: {
         notEmpty: true,
       },
