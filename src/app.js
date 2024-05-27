@@ -14,6 +14,7 @@ import logoutRoutes from "./routes/logoutRoutes.js";
 import editUserRoutes from "./routes/editUserRoutes.js";
 import userQuestionResponseRoutes from "./routes/userQuestionResponsesRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import teacherRoutes from "./routes/teacherRequestRoutes.js";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 
@@ -35,6 +36,8 @@ app.use("/", logoutRoutes);
 app.use("/", editUserRoutes);
 app.use("/", userQuestionResponseRoutes);
 app.use("/", profileRoutes);
+app.use("/", teacherRoutes);
+
 app.use(errorMiddleware);
 
 const { sequelize } = database;
