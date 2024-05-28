@@ -95,7 +95,7 @@ const getAllRequests = async (req, res) => {
 const getRequestsByUserId = async (req, res) => {
   await validateToken(req, res, () => {});
   const userId = req.authUser.id;
-  const requests = await TeacherRequest.findAll({
+  const requests = await TeacherRequest.findOne({
     where: {
       user_id: userId,
     },
