@@ -6,7 +6,11 @@ import { RecordNotFoundError } from "../constants/errors.js";
 const createLesson = async (req, res) => {
   try {
     const lesson = await Lessons.create(req.body);
-    res.status(HTTP_STATUS_CODES.CREATED).json(lesson);
+    res.status(HTTP_STATUS_CODES.CREATED).json({ 
+      success: true, 
+      message: "Lesson created successfully", 
+      lessonId: lesson.lesson_id
+    });
   } catch (error) {
     res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
   }

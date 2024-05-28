@@ -80,10 +80,10 @@ const declineTeacherRequest = async (req, res) => {
 
 const createRequest = async (req, res) => {
   try {
-    const request = await TeacherRequest.create(req.body);
-    res.status(HTTP_STATUS_CODES.CREATED).json(request);
+    await TeacherRequest.create(req.body);
+    res.status(HTTP_STATUS_CODES.CREATED).json({ success: true, message: "Request created successfully"});
   } catch (error) {
-    res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
+    res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ success: false, message: error.message });
   }
 };
 
