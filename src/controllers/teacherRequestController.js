@@ -17,10 +17,18 @@ const validateTeacherRequest = async (req, res, next) => {
       .status(HTTP_STATUS_CODES.NOT_FOUND)
       .json({ message: "Teacher request is already approved" });
   }
+  if (teacherRequest.is_approved === "accepted") {
+    return res
+      .status(HTTP_STATUS_CODES.NOT_FOUND)
+      .json({ message: "Teacher request is already approved" });
+  }
 
   teacherRequest.is_approved = "accepted";
   await teacherRequest.save();
+  teacherRequest.is_approved = "accepted";
+  await teacherRequest.save();
 
+  const user = await Users.findByPk(user_id);
   const user = await Users.findByPk(user_id);
 
   if (!user) {
@@ -28,7 +36,14 @@ const validateTeacherRequest = async (req, res, next) => {
       .status(HTTP_STATUS_CODES.CREATED.NOT_FOUND)
       .json({ message: "User not found" });
   }
+  if (!user) {
+    return res
+      .status(HTTP_STATUS_CODES.CREATED.NOT_FOUND)
+      .json({ message: "User not found" });
+  }
 
+  user.user_role = "teacher";
+  await user.save();
   user.user_role = "teacher";
   await user.save();
 
@@ -40,11 +55,11 @@ const validateTeacherRequest = async (req, res, next) => {
 const createRequest = async (req, res) => {
   try {
     const request = await TeacherRequest.create(req.body);
-    res.status(HTTP_STATUS_CODES.CREATED).json(request);
+    res.status(HTTP_STATUS_CODES.CREATED).json({ success: true, message: "Request created successfully"});
   } catch (error) {
-    res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
+    res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ success: false, message: error.message });
   }
-};
+}; 
 
 const getAllRequests = async (req, res) => {
   const requests = await TeacherRequest.findAll();
