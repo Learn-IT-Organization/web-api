@@ -40,8 +40,12 @@ const createChapter = async (req, res) => {
     const tokenNames = tokens.map(token => token.token_name);
     await admin.messaging().sendToDevice(tokenNames, message);
 
-    res.status(HTTP_STATUS_CODES.CREATED).json(chapter);
-  } catch (error) {
+    res.status(HTTP_STATUS_CODES.CREATED).json({ 
+      success: true, 
+      message: "Chapter created successfully", 
+      chapterId: chapter.chapter_id
+    });
+    } catch (error) {
     console.error('Error creating chapter or sending push notification:', error);
     res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
   }

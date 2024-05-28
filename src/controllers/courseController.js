@@ -11,9 +11,13 @@ import UserLessonProgress from "../models/userLessonProgress.js";
 const createCourse = async (req, res) => {
   try {
     const course = await Course.create(req.body);
-    res.status(HTTP_STATUS_CODES.CREATED).json(course);
+    res.status(HTTP_STATUS_CODES.CREATED).json({ 
+      success: true, 
+      message: "Course created successfully", 
+      courseId: course.course_id
+    });
   } catch (error) {
-    res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
+    res.status(HTTP_STATUS_CODES.BAD_REQUES9T).json({ success: false, message: error.message });
   }
 };
 
