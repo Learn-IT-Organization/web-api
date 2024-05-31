@@ -11,19 +11,60 @@ import UserLessonProgress from "../models/userLessonProgress.js";
 const createCourse = async (req, res) => {
   try {
     const course = await Course.create(req.body);
-    res.status(HTTP_STATUS_CODES.CREATED).json({ 
-      success: true, 
-      message: "Course created successfully", 
-      courseId: course.course_id
+    res.status(HTTP_STATUS_CODES.CREATED).json({
+      success: true,
+      message: "Course created successfully",
+      courseId: course.course_id,
+      userId: course.course_user_id,
     });
   } catch (error) {
-    res.status(HTTP_STATUS_CODES.BAD_REQUES9T).json({ success: false, message: error.message });
+    res
+      .status(HTTP_STATUS_CODES.BAD_REQUEST)
+      .json({ success: false, message: error.message });
   }
 };
 
 const getAllCourses = async (req, res) => {
   const courses = await Course.findAll();
   res.status(HTTP_STATUS_CODES.OK).json(courses);
+};
+
+const editCourse = async (req, res) => {
+  const { id } = req.params;
+  const { course_name, course_description} =
+    req.body;
+
+  try {
+    const course = await Course.findByPk(id);
+
+    if (!course) {
+      return res
+        .status(HTTP_STATUS_CODES.NOT_FOUND)
+        .json({ error: "Course not found" });
+    }
+
+    if (course_name !== undefined) {
+      course.course_name = course_name;
+    }
+    if (course_description !== undefined) {
+      course.course_description = course_description;
+    }
+  
+    await course.save();
+    return res
+      .status(HTTP_STATUS_CODES.OK)
+      .json({
+        success: true,
+        message: "Course updated successfully",
+        courseId: course.course_id,
+        userId: course.course_user_id,
+      });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal server error" });
+  }
 };
 
 const getCourseById = async (req, res) => {
@@ -113,7 +154,7 @@ const getQuestionsAnswersByCourseIdChapterIdLessonId = async (req, res) => {
         break;
     }
   }
-  res.status(200).json(questionsAnswers);
+  res.status(HTTP_STATUS_CODES.OK).json(questionsAnswers);
 };
 
 function shuffle(array) {
@@ -182,7 +223,7 @@ const getQuestionsAnswersFilteredByType = async (req, res) => {
         break;
     }
   }
-  res.status(200).json(questionsAnswers);
+  res.status(HTTP_STATUS_CODES.OK).json(questionsAnswers);
 };
 
 const getMyCourses = async (req, res) => {
@@ -286,4 +327,5 @@ export {
   getQuestionsAnswersFilteredByType,
   getMyCourses,
   calculateChapterScore,
+  editCourse,
 };

@@ -25,6 +25,10 @@ const Chapter = sequelize.define('chapters', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    chapter_user_id:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
 }, {
     timestamps: false, 
 });

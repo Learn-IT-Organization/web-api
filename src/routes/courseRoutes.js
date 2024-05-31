@@ -9,6 +9,7 @@ import {
   getQuestionsAnswersFilteredByType,
   getMyCourses,
   calculateChapterScore,
+  editCourse
 } from "../controllers/courseController.js";
 import {
   validateStudent,
@@ -21,6 +22,8 @@ const router = Router();
 router.post("/courses", validateTeacher, createCourse);
 
 router.get("/courses", validateStudent, getAllCourses);
+
+router.put("/editCourse/:id", validateTeacher, editCourse);
 
 router.get("/course/:id", validateStudent, getCourseById);
 

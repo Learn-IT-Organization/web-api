@@ -3,7 +3,7 @@ import Lessons from "../models/lessonModel.js";
 import Tokens from "../models/tokensModel.js";
 import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import { RecordNotFoundError } from "../constants/errors.js";
-import admin from 'firebase-admin';
+import admin from "firebase-admin";
 
 const sendToken = async (req, res) => {
   try {
@@ -12,41 +12,48 @@ const sendToken = async (req, res) => {
   } catch (error) {
     res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
   }
-}
+};
 
 const getAllTokens = async (req, res) => {
   const tokens = await Tokens.findAll();
   res.status(HTTP_STATUS_CODES.OK).json(tokens);
-}
+};
 
 const createChapter = async (req, res) => {
-  try {  
+  try {
     const chapter = await Chapter.create(req.body);
 
     const currentDate = new Date(Date.now());
-    console.log('Current date:', currentDate);
+    console.log("Current date:", currentDate);
 
     const message = {
       data: {
-        isNewChapter: 'true',
+        isNewChapter: "true",
       },
       notification: {
-        title: 'New chapter added!',
-        body: req.body.chapter_name + ' chapter has been added to the course at ' + currentDate,
+        title: "New chapter added!",
+        body:
+          req.body.chapter_name +
+          " chapter has been added to the course at " +
+          currentDate,
       },
     };
 
     const tokens = await Tokens.findAll();
-    const tokenNames = tokens.map(token => token.token_name);
+    const tokenNames = tokens.map((token) => token.token_name);
     await admin.messaging().sendToDevice(tokenNames, message);
 
-    res.status(HTTP_STATUS_CODES.CREATED).json({ 
-      success: true, 
-      message: "Chapter created successfully", 
-      chapterId: chapter.chapter_id
+    res.status(HTTP_STATUS_CODES.CREATED).json({
+      success: true,
+      message: "Chapter created successfully",
+      chapterId: chapter.chapter_id,
+      userId: chapter.chapter_user_id,
     });
-    } catch (error) {
-    console.error('Error creating chapter or sending push notification:', error);
+  } catch (error) {
+    console.error(
+      "Error creating chapter or sending push notification:",
+      error
+    );
     res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
   }
 };
@@ -54,6 +61,43 @@ const createChapter = async (req, res) => {
 const getAllChapters = async (req, res) => {
   const chapters = await Chapter.findAll();
   res.status(HTTP_STATUS_CODES.OK).json(chapters);
+};
+
+const editChapter = async (req, res) => {
+  const { id } = req.params;
+  const { chapter_name, chapter_description, chapter_sequence_number } =
+    req.body;
+
+  try {
+    const chapter = await Chapter.findByPk(id);
+
+    if (!chapter) {
+      return res
+        .status(HTTP_STATUS_CODES.NOT_FOUND)
+        .json({ error: "Chapter not found" });
+    }
+
+    if (chapter_name !== undefined) {
+      chapter.chapter_name = chapter_name;
+    }
+    if (chapter_description !== undefined) {
+      chapter.chapter_description = chapter_description;
+    }
+    await chapter.save();
+    return res
+      .status(HTTP_STATUS_CODES.OK)
+      .json({
+        success: true,
+        message: "Chapter updated successfully",
+        chapterId: chapter.chapter_id,
+        userId: chapter.chapter_user_id,
+      });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal server error" });
+  }
 };
 
 const getChapterById = async (req, res) => {
@@ -84,4 +128,5 @@ export {
   getAllChapters,
   getChapterById,
   getLessonsByChapterId,
+  editChapter,
 };
