@@ -30,7 +30,7 @@ const Course = sequelize.define('courses', {
     course_user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-    },
+    }
 }, {
     timestamps: false, 
 });

@@ -9,7 +9,8 @@ const createLesson = async (req, res) => {
     res.status(HTTP_STATUS_CODES.CREATED).json({ 
       success: true, 
       message: "Lesson created successfully", 
-      lessonId: lesson.lesson_id
+      lessonId: lesson.lesson_id,
+      userId: lesson.lesson_user_id,
     });
   } catch (error) {
     res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
@@ -19,6 +20,50 @@ const createLesson = async (req, res) => {
 const getAllLessons = async (req, res) => {
   const lessons = await Lessons.findAll();
   res.status(HTTP_STATUS_CODES.OK).json(lessons);
+};
+
+const editLesson = async (req, res) => {
+  const { id } = req.params;
+  const { lesson_name, lesson_description, lesson_type, lesson_tags} =
+    req.body;
+
+  try {
+    const lesson = await Lessons.findByPk(id);
+
+    if (!lesson) {
+      return res
+        .status(HTTP_STATUS_CODES.NOT_FOUND)
+        .json({ error: "Lesson not found" });
+    }
+
+    if (lesson_name !== undefined) {
+      lesson.lesson_name = lesson_name;
+    }
+    if (lesson_description !== undefined) {
+      lesson.lesson_description = lesson_description;
+    }
+    if (lesson_type !== undefined) {
+      lesson.lesson_type = lesson_type;
+    }
+    if (lesson_tags !== undefined) {
+      lesson.lesson_tags = lesson_tags;
+    }
+  
+    await lesson.save();
+    return res
+      .status(HTTP_STATUS_CODES.OK)
+      .json({
+        success: true,
+        message: "Lesson updated successfully",
+        lessonId: lesson.lesson_id,
+        userId: lesson.lesson_user_id,
+      });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal server error" });
+  }
 };
 
 const getLessonById = async (req, res) => {
@@ -55,4 +100,5 @@ export {
   getAllLessons,
   getLessonById,
   getContentsByLessonId,
+  editLesson,
 };

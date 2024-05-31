@@ -57,6 +57,10 @@ const Lessons = sequelize.define(
         notEmpty: true,
       },
     },
+    lesson_user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   {
     timestamps: false,

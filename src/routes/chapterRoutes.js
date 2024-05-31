@@ -6,6 +6,7 @@ import {
   getAllChapters,
   getChapterById,
   getLessonsByChapterId,
+  editChapter,
 } from "../controllers/chapterController.js";
 import {
   validateAdmin,
@@ -16,6 +17,8 @@ import {
 const router = Router();
 
 router.post("/chapters", validateTeacher, createChapter);
+
+router.put("/editChapter/:id", validateTeacher, editChapter);
 
 router.post("/FCM_token", sendToken);
 
