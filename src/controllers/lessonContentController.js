@@ -9,7 +9,12 @@ const upload = multer({ storage: storage });
 const createLessonContent = async (req, res) => {
   try {
     const lessonContent = await LessonContent.create(req.body);
-    res.status(HTTP_STATUS_CODES.CREATED).json(lessonContent);
+    res.status(HTTP_STATUS_CODES.CREATED).json({
+      success: true,
+      message: "Lesson content created successfully",
+      lessonId: lessonContent.content_lesson_id,
+      contentId: lessonContent.content_id,
+    });
   } catch (error) {
     res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
   }
@@ -31,4 +36,47 @@ const getLessonContentById = async (req, res) => {
   }
 };
 
-export { createLessonContent, getAllLessonContents, getLessonContentById,  };
+const editLessonContent = async (req, res) => {
+  const { id } = req.params;
+  const { url, content_title, content_description } = req.body;
+
+  try {
+    const lessonContent = await LessonContent.findByPk(id);
+
+    if (!lessonContent) {
+      return res
+        .status(HTTP_STATUS_CODES.NOT_FOUND)
+        .json({ error: "Lesson Content not found" });
+    }
+
+    if (url !== undefined) {
+      lessonContent.url = url;
+    }
+    if (content_title !== undefined) {
+      lessonContent.content_title = content_title;
+    }
+    if (content_description !== undefined) {
+      lessonContent.content_description = content_description;
+    }
+
+    await lessonContent.save();
+    return res.status(HTTP_STATUS_CODES.OK).json({
+      success: true,
+      message: "Lesson Content updated successfully",
+      lessonContentId: lessonContent.lesson_content_id,
+      lessonId: lessonContent.lesson_id,
+    });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(HTTP_STATUS_CODES.BAD_REQUEST)
+      .json({ success: false, message: error.message });
+  }
+};
+
+export {
+  createLessonContent,
+  getAllLessonContents,
+  getLessonContentById,
+  editLessonContent,
+};
