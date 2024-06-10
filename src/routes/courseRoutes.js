@@ -9,7 +9,8 @@ import {
   getQuestionsAnswersFilteredByType,
   getMyCourses,
   calculateChapterScore,
-  editCourse
+  editCourse,
+  deleteCourse
 } from "../controllers/courseController.js";
 import {
   validateStudent,
@@ -26,6 +27,8 @@ router.get("/courses", validateStudent, getAllCourses);
 router.put("/editCourse/:id", validateTeacher, editCourse);
 
 router.get("/course/:id", validateStudent, getCourseById);
+
+router.delete("/course/:id", validateTeacher, deleteCourse);
 
 router.get(
   "/course/:courseId/chapters",

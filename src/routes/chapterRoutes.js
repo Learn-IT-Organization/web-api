@@ -7,6 +7,7 @@ import {
   getChapterById,
   getLessonsByChapterId,
   editChapter,
+  deleteChapter
 } from "../controllers/chapterController.js";
 import {
   validateAdmin,
@@ -27,6 +28,8 @@ router.get("/FCM_token", validateStudent, getAllTokens);
 router.get("/chapters", validateStudent, getAllChapters);
 
 router.get("/chapter/:id", validateStudent, getChapterById);
+
+router.delete("/chapter/:id", validateTeacher, deleteChapter);
 
 router.get(
   "/chapters/:chapterId/lessons",

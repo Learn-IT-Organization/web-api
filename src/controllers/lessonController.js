@@ -84,6 +84,33 @@ const getLessonById = async (req, res) => {
   }
 };
 
+const deleteLesson = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const lesson = await Lessons.findByPk(id);
+
+      if (!lesson) {
+          return res.status(HTTP_STATUS_CODES.NOT_FOUND).json({
+              success: false,
+              message: 'Lesson not found'
+          });
+      }
+
+      await lesson.destroy();
+
+      return res.status(HTTP_STATUS_CODES.OK).json({
+          success: true,
+          message: 'Lesson deleted successfully'
+      });
+  } catch (error) {
+      console.error('Error deleting lesson:', error);
+      return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+          success: false,
+          message: 'Internal server error'
+      });
+  }
+};
 
 const getContentsByLessonId = async (req, res) => {
   const lessonId = req.params.lessonId;
@@ -101,4 +128,5 @@ export {
   getLessonById,
   getContentsByLessonId,
   editLesson,
+  deleteLesson
 };
