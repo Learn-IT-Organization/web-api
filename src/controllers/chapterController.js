@@ -100,6 +100,34 @@ const editChapter = async (req, res) => {
   }
 };
 
+const deleteChapter = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const chapter = await Chapter.findByPk(id);
+
+      if (!chapter) {
+          return res.status(HTTP_STATUS_CODES.NOT_FOUND).json({
+              success: false,
+              message: 'Chapter not found'
+          });
+      }
+
+      await chapter.destroy();
+
+      return res.status(HTTP_STATUS_CODES.OK).json({
+          success: true,
+          message: 'Chapter deleted successfully'
+      });
+  } catch (error) {
+      console.error('Error deleting chapter:', error);
+      return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+          success: false,
+          message: 'Internal server error'
+      });
+  }
+};
+
 const getChapterById = async (req, res) => {
   const chapterId = req.params.id;
   const chapter = await Chapter.findByPk(chapterId);
@@ -129,4 +157,5 @@ export {
   getChapterById,
   getLessonsByChapterId,
   editChapter,
+  deleteChapter
 };

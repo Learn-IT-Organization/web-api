@@ -78,6 +78,25 @@ const getCourseById = async (req, res) => {
   }
 };
 
+const deleteCourse = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const course = await Course.findByPk(id);
+      
+      if (!course) {
+          return res.status(HTTP_STATUS_CODES.NOT_FOUND).json({ message: 'Course not found' });
+      }
+
+      await course.destroy();
+      
+      return res.status(HTTP_STATUS_CODES.OK).json({ message: 'Course deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting course:', error);
+      return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+  }
+};
+
 const getChaptersByCourseId = async (req, res) => {
   const courseId = req.params.courseId;
   const chapters = await Chapter.findAll({
@@ -328,4 +347,5 @@ export {
   getMyCourses,
   calculateChapterScore,
   editCourse,
+  deleteCourse,
 };
