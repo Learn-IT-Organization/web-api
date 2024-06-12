@@ -3,7 +3,8 @@ import {
   createLessonContent,
   getAllLessonContents,
   getLessonContentById,
-  editLessonContent
+  editLessonContent,
+  deleteLessonContent,
 } from "../controllers/lessonContentController.js";
 import {
   validateStudent,
@@ -19,5 +20,7 @@ router.get("/lessonContents", validateStudent, getAllLessonContents);
 router.get("/lessonContent/:id", validateStudent, getLessonContentById);
 
 router.put("/editLessonContent/:id", validateTeacher, editLessonContent);
+
+router.delete("/lessonContent/:id", validateTeacher, deleteLessonContent);
 
 export default router;

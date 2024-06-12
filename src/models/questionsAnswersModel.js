@@ -34,6 +34,10 @@ const QuestionsAnswers = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    question_user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   {
     timestamps: false,
