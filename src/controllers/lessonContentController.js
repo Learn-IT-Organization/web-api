@@ -63,7 +63,6 @@ const editLessonContent = async (req, res) => {
     return res.status(HTTP_STATUS_CODES.OK).json({
       success: true,
       message: "Lesson Content updated successfully",
-      lessonContentId: lessonContent.lesson_content_id,
       lessonId: lessonContent.lesson_id,
     });
   } catch (error) {
@@ -74,9 +73,33 @@ const editLessonContent = async (req, res) => {
   }
 };
 
+const deleteLessonContent = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const lessonContent = await LessonContent.findByPk(id);
+
+    if (!lessonContent) {
+      return res
+        .status(HTTP_STATUS_CODES.NOT_FOUND)
+        .json({ error: "Lesson Content not found" });
+    }
+
+    await lessonContent.destroy();
+    return res.status(HTTP_STATUS_CODES.OK).json({
+      success: true,
+      message: "Lesson Content deleted successfully",
+      lessonId: lessonContent.content_lesson_id,
+    });
+  } catch (error) {
+    res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({ error: error.message });
+  }
+};
+
 export {
   createLessonContent,
   getAllLessonContents,
   getLessonContentById,
   editLessonContent,
+  deleteLessonContent,
 };
