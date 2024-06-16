@@ -6,7 +6,7 @@ import HTTP_STATUS_CODES from "../constants/httpStatusCodes.js";
 import Lessons from "../models/lessonModel.js";
 import { RecordNotFoundError } from "../constants/errors.js";
 import { validateToken } from "../middleware/JWT.js";
-import UserLessonProgress from "../models/userLessonProgress.js";
+import UserLessonProgress from "../models/userLessonProgressModel.js";
 
 const createCourse = async (req, res) => {
   try {
