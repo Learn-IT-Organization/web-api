@@ -9,7 +9,6 @@ import questionsAnswersRoutes from "./routes/questionsAnswersRoutes.js";
 import lessonContentRoutes from "./routes/lessonContentRoutes.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
 import userQuestionResponseRoutes from "./routes/userQuestionResponsesRoutes.js";
-import profileRoutes from "./routes/profileRoutes.js";
 import teacherRoutes from "./routes/teacherRequestRoutes.js";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
@@ -27,7 +26,6 @@ app.use("/", lessonRoutes);
 app.use("/", questionsAnswersRoutes);
 app.use("/", lessonContentRoutes);
 app.use("/", userQuestionResponseRoutes);
-app.use("/", profileRoutes);
 app.use("/", teacherRoutes);
 
 app.use(errorMiddleware);

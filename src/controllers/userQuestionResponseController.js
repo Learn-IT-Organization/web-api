@@ -4,7 +4,7 @@ import QuestionsAnswers from "../models/questionsAnswersModel.js";
 import Lessons from "../models/lessonModel.js";
 import Users from "../models/userModel.js";
 import { validateToken } from "../middleware/JWT.js";
-import UserLessonProgress from "../models/userLessonProgress.js";
+import UserLessonProgress from "../models/userLessonProgressModel.js";
 
 const respond = async (req, res) => {
   try {
